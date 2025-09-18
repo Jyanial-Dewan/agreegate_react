@@ -16,17 +16,23 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 
-const formSchema = z.object({
-  username: z.string().min(2).max(50),
-  firstname: z.string().min(2),
-  lastname: z.string().min(2),
-  email: z.string().min(2),
-  password: z.string().min(8),
-  confirm: z.string().min(8),
-});
+const formSchema = z
+  .object({
+    username: z.string().min(2, "Too short").max(50, "Too long"),
+    firstname: z.string().min(2, "Too short"),
+    lastname: z.string().min(2, "Too short"),
+    email: z.email("Type valid email"),
+    password: z.string().min(8, "Too short"),
+    confirm: z.string().min(8, "Too short"),
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "Passwords do not match",
+    path: ["confirm"],
+  });
 
 const SignUp = () => {
   /** Define form */
@@ -49,13 +55,13 @@ const SignUp = () => {
 
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">
-      <Card className="w-full max-w-sm mx-auto">
+      <Card className="w-full max-w-md mx-auto max-h-[90vh] overflow-auto">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Sign Up</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="flex flex-col gap-3">
                 <FormField
                   control={form.control}
@@ -66,6 +72,7 @@ const SignUp = () => {
                       <FormControl>
                         <Input placeholder="first name" {...field} />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -79,6 +86,7 @@ const SignUp = () => {
                         <FormControl>
                           <Input placeholder="last name" {...field} />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -91,6 +99,7 @@ const SignUp = () => {
                         <FormControl>
                           <Input placeholder="username" {...field} />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -104,6 +113,7 @@ const SignUp = () => {
                       <FormControl>
                         <Input type="email" placeholder="email" {...field} />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -121,6 +131,7 @@ const SignUp = () => {
                             {...field}
                           />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -137,6 +148,7 @@ const SignUp = () => {
                             {...field}
                           />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />

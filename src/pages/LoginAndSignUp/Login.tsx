@@ -19,11 +19,12 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 
 const formSchema = z.object({
-  email: z.string().min(2).max(50),
-  password: z.string().min(8),
+  email: z.email("Type vaild email"),
+  password: z.string().min(8, "Password must be at least 8 character"),
 });
 
 const Login = () => {
@@ -47,12 +48,12 @@ const Login = () => {
 
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">
-      <Form {...form}>
-        <Card className="w-full max-w-sm mx-auto">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">Login</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <Card className="w-full max-w-sm mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">Login</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
@@ -67,6 +68,7 @@ const Login = () => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -83,6 +85,7 @@ const Login = () => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -90,20 +93,20 @@ const Login = () => {
                 Login
               </Button>
             </form>
-          </CardContent>
-          <CardFooter className="flex-col gap-2">
-            <p>
-              Don't have an account?{" "}
-              <Link
-                to={"/signup"}
-                className="text-blue-600 hover:text-blue-800 hover:cursor-pointer underline-offset-4 hover:underline"
-              >
-                Sign Up
-              </Link>
-            </p>
-          </CardFooter>
-        </Card>
-      </Form>
+          </Form>
+        </CardContent>
+        <CardFooter className="flex-col gap-2">
+          <p>
+            Don't have an account?{" "}
+            <Link
+              to={"/signup"}
+              className="text-blue-600 hover:text-blue-800 hover:cursor-pointer underline-offset-4 hover:underline"
+            >
+              Sign Up
+            </Link>
+          </p>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

@@ -19,6 +19,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import useAxios, { type method } from "@/hooks/useAxios";
+import { nodeApi } from "@/services/api";
+import Loader from "@/components/ui/Loader";
 
 const formSchema = z
   .object({
@@ -35,6 +38,7 @@ const formSchema = z
   });
 
 const SignUp = () => {
+  const { isLoading, fetchData, response } = useAxios("node");
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,10 +53,23 @@ const SignUp = () => {
   });
 
   /** SignUp function */
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const info = {
+      user_type: "person",
+      user_name: values.username,
+      email_address: values.email,
+      first_name: values.firstname,
+      last_name: values.lastname,
+      password: values.password,
+    };
+    const params = {
+      url: nodeApi.register,
+      method: "POST" as method,
+      data: info,
+    };
+    await fetchData(params);
+    console.log(response, "response");
   };
-
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">
       <Card className="w-full max-w-md mx-auto max-h-[90vh] overflow-auto">
@@ -155,7 +172,7 @@ const SignUp = () => {
                 </div>
               </div>
               <Button type="submit" className="w-full">
-                Sign Up
+                {isLoading ? <Loader /> : "Sign Up"}
               </Button>
             </form>
           </Form>

@@ -1,3 +1,11 @@
+import Header from "@/components/Header/Header";
+import { Outlet } from "react-router";
+
 export const ProtectedLayout = () => {
-  return <div>ProtectedLayout</div>;
+  return (
+    <div>
+      <Header />
+      <Outlet />
+    </div>
+  );
 };

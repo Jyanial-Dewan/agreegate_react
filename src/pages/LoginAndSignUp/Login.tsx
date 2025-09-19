@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
@@ -21,15 +21,26 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { nodeApi } from "@/services/api";
+import type { method } from "@/hooks/useAxios";
+import useAxios from "@/hooks/useAxios";
+import Loader from "@/components/common/Loader";
+import axios from "axios";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useState } from "react";
 
 const formSchema = z.object({
-  email: z.email("Type vaild email"),
+  email: z.string().min(2, "Too Short"),
   password: z.string().min(8, "Password must be at least 8 character"),
 });
 
 const Login = () => {
-  const { setIsLoggedIn } = useAuthContext();
+  const { setToken, token } = useAuthContext();
+  const { isLoading, fetchData, error } = useAxios("node");
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
+
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,11 +51,38 @@ const Login = () => {
   });
 
   /** Login function */
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    setIsLoggedIn(true);
-    navigate("/");
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const info = {
+      user: values.email,
+      password: values.password,
+    };
+    const params = {
+      url: nodeApi.Login,
+      method: "POST" as method,
+      data: info,
+    };
+    const res = await fetchData(params);
+    if (res?.status === 200) {
+      setToken(res.data);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${token?.access_token}`;
+      localStorage.setItem("token", JSON.stringify(res.data));
+      navigate("/");
+    }
   };
+
+  const handleShowPassword = () => {
+    if (showPassword) {
+      setShowPassword(false);
+    } else {
+      setShowPassword(true);
+    }
+  };
+
+  if (token && token.isLoggedIn === true) {
+    return <Navigate state={location.pathname} to="/" replace />;
+  }
 
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">
@@ -60,9 +98,13 @@ const Login = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Username or Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="email" {...field} />
+                      <Input
+                        type="text"
+                        placeholder="username or email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -75,21 +117,35 @@ const Login = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="*********"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={handleShowPassword}
+                          className="absolute right-4 top-2 cursor-pointer"
+                        >
+                          {showPassword ? (
+                            <EyeOffIcon size={20} color="#6b7280" />
+                          ) : (
+                            <EyeIcon size={20} color="#6b7280" />
+                          )}
+                        </button>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="*********"
+                          {...field}
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <Button type="submit" className="w-full cursor-pointer">
-                Login
+                {isLoading ? <Loader /> : "Login"}
               </Button>
             </form>
           </Form>
+          <span className="text-red-600">{error}</span>
         </CardContent>
         <CardFooter className="flex-col gap-2">
           <p>

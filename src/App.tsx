@@ -13,6 +13,7 @@ import {
 } from "react-device-detect";
 import * as UAParser from "ua-parser-js";
 import { useEffect } from "react";
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
   useEffect(() => {
@@ -51,9 +52,10 @@ function App() {
     engineVersion
   );
   return (
-    <>
+    <div>
+      <Toaster />
       <RouterProvider router={router} />
-    </>
+    </div>
   );
 }
 

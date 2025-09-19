@@ -11,7 +11,6 @@ import { LogOut, User } from "lucide-react";
 
 const Dropdown = () => {
   const handleSignOut = async () => {};
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none">
@@ -29,7 +28,7 @@ const Dropdown = () => {
         </DropdownMenuLabel>
         <div className="p-2 rounded hover:bg-hover text-sm">
           <NavLink
-            to="/access-profiles"
+            to="/update-profile"
             className={({ isActive }) =>
               isActive
                 ? "flex gap-2 items-center w-full text-active"

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -12,17 +12,19 @@ interface IFetchDataParams {
   isToast?: boolean;
 }
 
-const useAxios = (backend: "flask" | "node") => {
-  const [response, setResponse] = useState<unknown>(null);
+const useAxios = <T>(backend: "flask" | "node") => {
+  const [response, setResponse] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Keep controller in a ref (avoids mutation issues)
   const controllerRef = useRef<AbortController | null>(null);
 
   // Setup axios instance
-  const axiosInstance = axios.create({
-    baseURL: backend === "flask" ? "" : "http://localhost:3000",
-  });
+  const axiosInstance = useMemo(() => {
+    return axios.create({
+      baseURL: backend === "flask" ? "" : "http://localhost:3000",
+    });
+  }, [backend]);
 
   // Request interceptor (example: add auth headers if needed)
   axiosInstance.interceptors.request.use(
@@ -53,7 +55,7 @@ const useAxios = (backend: "flask" | "node") => {
           params,
           signal: controllerRef.current.signal,
         });
-        setResponse(result.data);
+        setResponse(result.data.result as T);
 
         if (isToast) {
           toast(result.data.message);

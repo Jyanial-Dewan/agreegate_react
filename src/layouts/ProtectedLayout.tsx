@@ -6,7 +6,6 @@ export const ProtectedLayout = () => {
     <div>
       <Header />
       <Outlet />
-      ProtectedLayout
     </div>
   );
 };

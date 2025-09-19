@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext, type IToken } from "./auth-context";
+import Loader from "@/components/common/Loader";
 
 interface AuthContextProviderProp {
   children: ReactNode;
@@ -18,7 +19,12 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
     setLoading(false);
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-[100vh]">
+        <Loader size="40" color="black" />
+      </div>
+    );
 
   return (
     <AuthContext.Provider value={{ token, setToken }}>

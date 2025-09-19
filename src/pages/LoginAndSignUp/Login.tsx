@@ -34,7 +34,7 @@ const formSchema = z.object({
 
 const Login = () => {
   const { setToken, token } = useAuthContext();
-  const { isLoading, fetchData } = useAxios("node");
+  const { isLoading, fetchData, error } = useAxios("node");
 
   const navigate = useNavigate();
 
@@ -117,6 +117,7 @@ const Login = () => {
               </Button>
             </form>
           </Form>
+          <span className="text-red-600">{error}</span>
         </CardContent>
         <CardFooter className="flex-col gap-2">
           <p>

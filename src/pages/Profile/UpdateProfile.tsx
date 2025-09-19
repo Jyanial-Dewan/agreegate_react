@@ -105,112 +105,121 @@ const UpdateProfile = () => {
 
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">
-      <Card className="w-full max-w-md mx-auto max-h-[90vh] overflow-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Update Profile</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="flex flex-col gap-3">
-                <FormField
-                  control={form.control}
-                  name="firstname"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="first name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex gap-3">
+      {response ? (
+        <Card className="w-full max-w-md mx-auto max-h-[90vh] overflow-auto">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">
+              Update Profile
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <div className="flex flex-col gap-3">
                   <FormField
                     control={form.control}
-                    name="lastname"
+                    name="firstname"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Last Name</FormLabel>
+                        <FormLabel>First Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="last name" {...field} />
+                          <Input placeholder="first name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+                  <div className="flex gap-3">
+                    <FormField
+                      control={form.control}
+                      name="lastname"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Last Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="last name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <Input placeholder="username" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <FormField
                     control={form.control}
-                    name="username"
+                    name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="username" {...field} />
+                          <Input type="email" placeholder="email" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+                  <div className="flex gap-3">
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="********"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="confirm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="********"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex gap-3">
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="********"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="confirm"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="********"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-              <Button type="submit" className="w-full">
-                {isLoading ? <Loader /> : "Update"}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                <Button type="submit" className="w-full">
+                  {isLoading ? <Loader /> : "Update"}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      ) : (
+        <Loader size="30" color="black" />
+      )}
     </div>
   );
 };

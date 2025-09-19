@@ -15,6 +15,7 @@ interface IFetchDataParams {
 const useAxios = <T>(backend: "flask" | "node") => {
   const [response, setResponse] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Keep controller in a ref (avoids mutation issues)
   const controllerRef = useRef<AbortController | null>(null);
@@ -65,14 +66,17 @@ const useAxios = <T>(backend: "flask" | "node") => {
         if (axios.isCancel(err)) {
           console.log("Request cancelled:", (err as Error).message);
         } else if (axios.isAxiosError(err)) {
+          setError(err.message);
           if (isToast) {
             toast(err.response?.data ?? err.message);
           }
         } else if (err instanceof Error) {
+          setError(err.message);
           if (isToast) {
             toast(err.message);
           }
         } else {
+          setError("An Unknown Error Occured");
           if (isToast) {
             toast("An Unknown Error Occured");
           }
@@ -91,7 +95,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
     };
   }, []);
 
-  return { response, isLoading, fetchData };
+  return { response, isLoading, error, fetchData };
 };
 
 export default useAxios;

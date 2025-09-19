@@ -1,13 +1,6 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -22,7 +15,9 @@ import { useForm } from "react-hook-form";
 import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import Loader from "@/components/common/Loader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthContext } from "@/context/AuthContext/useContext";
+import type { IUser } from "@/types/user.interface";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 const formSchema = z
@@ -39,11 +34,12 @@ const formSchema = z
     path: ["confirm"],
   });
 
-const SignUp = () => {
-  const navigate = useNavigate();
-  const { isLoading, fetchData } = useAxios("node");
+const UpdateProfile = () => {
+  const { token, user } = useAuthContext();
+  const { isLoading, fetchData } = useAxios<IUser>("node");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +53,20 @@ const SignUp = () => {
     },
   });
 
-  /** SignUp function */
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        username: user?.user_name,
+        firstname: user?.first_name,
+        lastname: user?.last_name,
+        email: user?.email_addresses[0] ?? "",
+        password: "",
+        confirm: "",
+      });
+    }
+  }, [user, form]);
+
+  /** Update function */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const info = {
       user_type: "person",
@@ -68,16 +77,23 @@ const SignUp = () => {
       password: values.password,
     };
     const params = {
-      url: nodeApi.User + "/register",
-      method: "POST" as method,
+      url: nodeApi.User + "/" + token?.user_id,
+      method: "PUT" as method,
       data: info,
       isToast: true,
     };
     const res = await fetchData(params);
-    if (res?.data) {
-      navigate("/login");
+
+    if (res?.status === 200) {
+      form.reset({
+        username: res.data.result.user_name,
+        firstname: res.data.result.first_name,
+        lastname: res.data.result.last_name,
+        email: res.data.result.email_addresses[0] ?? "",
+        password: "",
+        confirm: "",
+      });
     }
-    form.reset();
   };
 
   const handleShowPassword = () => {
@@ -99,7 +115,7 @@ const SignUp = () => {
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">
       <Card className="w-full max-w-md mx-auto max-h-[90vh] overflow-auto">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Sign Up</CardTitle>
+          <CardTitle className="text-2xl text-center">Update Profile</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -223,24 +239,13 @@ const SignUp = () => {
                 </div>
               </div>
               <Button type="submit" className="w-full">
-                {isLoading ? <Loader /> : "Sign Up"}
+                {isLoading ? <Loader /> : "Update"}
               </Button>
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex-col">
-          <p>
-            Already have an account?{" "}
-            <Link
-              to={"/login"}
-              className="text-blue-500 hover:cursor-pointer underline-offset-4 hover:underline"
-            >
-              Login
-            </Link>
-          </p>
-        </CardFooter>
       </Card>
     </div>
   );
 };
-export default SignUp;
+export default UpdateProfile;

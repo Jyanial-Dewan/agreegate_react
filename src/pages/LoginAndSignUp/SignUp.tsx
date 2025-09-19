@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -21,7 +21,7 @@ import {
 import { useForm } from "react-hook-form";
 import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
-import Loader from "@/components/ui/Loader";
+import Loader from "@/components/common/Loader";
 
 const formSchema = z
   .object({
@@ -38,6 +38,7 @@ const formSchema = z
   });
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const { isLoading, fetchData } = useAxios("node");
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,7 +69,10 @@ const SignUp = () => {
       data: info,
       isToast: true,
     };
-    await fetchData(params);
+    const res = await fetchData(params);
+    if (res?.data) {
+      navigate("/login");
+    }
     form.reset();
   };
   return (

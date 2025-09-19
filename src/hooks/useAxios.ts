@@ -54,10 +54,11 @@ const useAxios = (backend: "flask" | "node") => {
           signal: controllerRef.current.signal,
         });
         setResponse(result.data);
-        return result;
+
         if (isToast) {
           toast(result.data.message);
         }
+        return result;
       } catch (err: unknown) {
         if (axios.isCancel(err)) {
           console.log("Request cancelled:", (err as Error).message);

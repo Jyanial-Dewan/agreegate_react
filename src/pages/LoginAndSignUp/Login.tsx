@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
@@ -68,6 +68,10 @@ const Login = () => {
       navigate("/");
     }
   };
+
+  if (token?.user_id !== 0) {
+    return <Navigate state={location.pathname} to="/" replace />;
+  }
 
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">

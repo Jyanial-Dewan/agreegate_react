@@ -1,7 +1,55 @@
 import { RouterProvider } from "react-router";
 import router from "./routes/routes";
+import {
+  browserName,
+  browserVersion,
+  osName,
+  osVersion,
+  deviceType,
+  mobileVendor,
+  mobileModel,
+  engineName,
+  engineVersion,
+} from "react-device-detect";
+import * as UAParser from "ua-parser-js";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    const parser = new UAParser.UAParser();
+    const result = parser.getResult();
+    console.log(result);
+  }, []);
+
+  useEffect(() => {
+    const fetchIP = async () => {
+      const res = await fetch("https://ipapi.co/json/");
+      const data = await res.json();
+      console.log(data);
+    };
+    fetchIP();
+  }, []);
+
+  console.log(
+    "browser name: ",
+    browserName,
+    "browser version: ",
+    browserVersion,
+    "os Name: ",
+    osName,
+    "os Version: ",
+    osVersion,
+    "device Type:",
+    deviceType,
+    "mobile Vendor:",
+    mobileVendor,
+    "mobile Model:",
+    mobileModel,
+    "engine name: ",
+    engineName,
+    "engine Version: ",
+    engineVersion
+  );
   return (
     <>
       <RouterProvider router={router} />

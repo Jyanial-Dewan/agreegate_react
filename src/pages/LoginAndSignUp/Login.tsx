@@ -69,7 +69,8 @@ const Login = () => {
     }
   };
 
-  if (token?.user_id !== 0) {
+  console.log(token, "fds");
+  if (token && token.isLoggedIn === true) {
     return <Navigate state={location.pathname} to="/" replace />;
   }
 

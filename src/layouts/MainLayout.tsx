@@ -7,7 +7,7 @@ const MainLayout = () => {
   const location = useLocation();
 
   if (!token || !token.isLoggedIn || !token.access_token) {
-    return <Navigate state={location.pathname} to="/login" />;
+    return <Navigate to="/login" state={location.pathname} replace />;
   }
 
   return <ProtectedLayout />;

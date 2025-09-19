@@ -6,11 +6,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { LogOut, User } from "lucide-react";
+import { useAuthContext } from "@/context/AuthContext/useContext";
 
 const Dropdown = () => {
-  const handleSignOut = async () => {};
+  const { setToken } = useAuthContext();
+  const navigate = useNavigate();
+  const logOut = async () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    navigate("/login");
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none">
@@ -44,7 +51,7 @@ const Dropdown = () => {
         <DropdownMenuSeparator />
         <div className="p-2 rounded hover:bg-hover text-sm">
           <button
-            onClick={handleSignOut}
+            onClick={logOut}
             className="flex gap-2 items-center w-full text-Red-300"
           >
             <LogOut size={18} />

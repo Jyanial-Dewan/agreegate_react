@@ -38,7 +38,7 @@ const formSchema = z
   });
 
 const SignUp = () => {
-  const { isLoading, fetchData, response } = useAxios("node");
+  const { isLoading, fetchData } = useAxios("node");
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -66,9 +66,10 @@ const SignUp = () => {
       url: nodeApi.register,
       method: "POST" as method,
       data: info,
+      isToast: true,
     };
     await fetchData(params);
-    console.log(response, "response");
+    form.reset();
   };
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">

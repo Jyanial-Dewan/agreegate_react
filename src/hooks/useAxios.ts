@@ -54,6 +54,7 @@ const useAxios = (backend: "flask" | "node") => {
           signal: controllerRef.current.signal,
         });
         setResponse(result.data);
+        return result;
         if (isToast) {
           toast(result.data.message);
         }

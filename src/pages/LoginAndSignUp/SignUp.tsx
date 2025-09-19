@@ -22,6 +22,8 @@ import { useForm } from "react-hook-form";
 import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import Loader from "@/components/common/Loader";
+import { useState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 const formSchema = z
   .object({
@@ -40,6 +42,8 @@ const formSchema = z
 const SignUp = () => {
   const navigate = useNavigate();
   const { isLoading, fetchData } = useAxios("node");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,6 +79,22 @@ const SignUp = () => {
     }
     form.reset();
   };
+
+  const handleShowPassword = () => {
+    if (showPassword) {
+      setShowPassword(false);
+    } else {
+      setShowPassword(true);
+    }
+  };
+  const handleShowConfirmPassword = () => {
+    if (showConfirmPassword) {
+      setShowConfirmPassword(false);
+    } else {
+      setShowConfirmPassword(true);
+    }
+  };
+
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">
       <Card className="w-full max-w-md mx-auto max-h-[90vh] overflow-auto">
@@ -147,11 +167,24 @@ const SignUp = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="********"
-                            {...field}
-                          />
+                          <div className="relative">
+                            <button
+                              type="button"
+                              onClick={handleShowPassword}
+                              className="absolute right-4 top-2 cursor-pointer"
+                            >
+                              {showPassword ? (
+                                <EyeOffIcon size={20} color="#6b7280" />
+                              ) : (
+                                <EyeIcon size={20} color="#6b7280" />
+                              )}
+                            </button>
+                            <Input
+                              type={showPassword ? "text" : "password"}
+                              placeholder="*********"
+                              {...field}
+                            />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -164,11 +197,24 @@ const SignUp = () => {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="********"
-                            {...field}
-                          />
+                          <div className="relative">
+                            <button
+                              type="button"
+                              onClick={handleShowConfirmPassword}
+                              className="absolute right-4 top-2 cursor-pointer"
+                            >
+                              {showConfirmPassword ? (
+                                <EyeOffIcon size={20} color="#6b7280" />
+                              ) : (
+                                <EyeIcon size={20} color="#6b7280" />
+                              )}
+                            </button>
+                            <Input
+                              type={showConfirmPassword ? "text" : "password"}
+                              placeholder="*********"
+                              {...field}
+                            />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

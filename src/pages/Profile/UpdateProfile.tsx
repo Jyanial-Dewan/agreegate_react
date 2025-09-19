@@ -15,9 +15,10 @@ import { useForm } from "react-hook-form";
 import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import Loader from "@/components/common/Loader";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import type { IUser } from "@/types/user.interface";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 const formSchema = z
   .object({
@@ -34,8 +35,10 @@ const formSchema = z
   });
 
 const UpdateProfile = () => {
-  const { token } = useAuthContext();
-  const { isLoading, fetchData, response } = useAxios<IUser>("node");
+  const { token, user } = useAuthContext();
+  const { isLoading, fetchData } = useAxios<IUser>("node");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,28 +54,17 @@ const UpdateProfile = () => {
   });
 
   useEffect(() => {
-    if (response) {
+    if (user) {
       form.reset({
-        username: response.user_name,
-        firstname: response.first_name,
-        lastname: response.last_name,
-        email: response.email_addresses[0] ?? "",
+        username: user?.user_name,
+        firstname: user?.first_name,
+        lastname: user?.last_name,
+        email: user?.email_addresses[0] ?? "",
         password: "",
         confirm: "",
       });
     }
-  }, [response, form]);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      const params = {
-        url: `${nodeApi.User}/${token?.user_id}`,
-        method: "GET" as method,
-      };
-      await fetchData(params);
-    };
-    loadUser();
-  }, [token?.user_id, fetchData]);
+  }, [user, form]);
 
   /** Update function */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -101,6 +93,21 @@ const UpdateProfile = () => {
         password: "",
         confirm: "",
       });
+    }
+  };
+
+  const handleShowPassword = () => {
+    if (showPassword) {
+      setShowPassword(false);
+    } else {
+      setShowPassword(true);
+    }
+  };
+  const handleShowConfirmPassword = () => {
+    if (showConfirmPassword) {
+      setShowConfirmPassword(false);
+    } else {
+      setShowConfirmPassword(true);
     }
   };
 
@@ -176,11 +183,24 @@ const UpdateProfile = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="********"
-                            {...field}
-                          />
+                          <div className="relative">
+                            <button
+                              type="button"
+                              onClick={handleShowPassword}
+                              className="absolute right-4 top-2 cursor-pointer"
+                            >
+                              {showPassword ? (
+                                <EyeOffIcon size={20} color="#6b7280" />
+                              ) : (
+                                <EyeIcon size={20} color="#6b7280" />
+                              )}
+                            </button>
+                            <Input
+                              type={showPassword ? "text" : "password"}
+                              placeholder="*********"
+                              {...field}
+                            />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -193,11 +213,24 @@ const UpdateProfile = () => {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="********"
-                            {...field}
-                          />
+                          <div className="relative">
+                            <button
+                              type="button"
+                              onClick={handleShowConfirmPassword}
+                              className="absolute right-4 top-2 cursor-pointer"
+                            >
+                              {showConfirmPassword ? (
+                                <EyeOffIcon size={20} color="#6b7280" />
+                              ) : (
+                                <EyeIcon size={20} color="#6b7280" />
+                              )}
+                            </button>
+                            <Input
+                              type={showConfirmPassword ? "text" : "password"}
+                              placeholder="*********"
+                              {...field}
+                            />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

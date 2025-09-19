@@ -1,3 +1,4 @@
+import type { IUser } from "@/types/user.interface";
 import { createContext } from "react";
 
 export interface IToken {
@@ -11,6 +12,8 @@ export interface IToken {
 export interface AuthContext {
   token: IToken | null;
   setToken: React.Dispatch<React.SetStateAction<IToken | null>>;
+  user: IUser | null;
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
 }
 
 export const AuthContext = createContext({} as AuthContext);

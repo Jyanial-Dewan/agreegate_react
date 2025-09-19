@@ -11,13 +11,14 @@ import { LogOut, User } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 
 const Dropdown = () => {
-  const { setToken } = useAuthContext();
+  const { setToken, user } = useAuthContext();
   const navigate = useNavigate();
   const logOut = async () => {
     localStorage.removeItem("token");
     setToken(null);
     navigate("/login");
   };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none">
@@ -31,7 +32,7 @@ const Dropdown = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 mr-1">
         <DropdownMenuLabel className=" font-bold font-workSans text-lg text-center">
-          {/* {token.user_name} */}
+          {user?.user_name}
         </DropdownMenuLabel>
         <div className="p-2 rounded hover:bg-hover text-sm">
           <NavLink

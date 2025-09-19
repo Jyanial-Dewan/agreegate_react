@@ -26,6 +26,8 @@ import type { method } from "@/hooks/useAxios";
 import useAxios from "@/hooks/useAxios";
 import Loader from "@/components/common/Loader";
 import axios from "axios";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().min(2, "Too Short"),
@@ -35,6 +37,7 @@ const formSchema = z.object({
 const Login = () => {
   const { setToken, token } = useAuthContext();
   const { isLoading, fetchData, error } = useAxios("node");
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -69,7 +72,14 @@ const Login = () => {
     }
   };
 
-  console.log(token, "fds");
+  const handleShowPassword = () => {
+    if (showPassword) {
+      setShowPassword(false);
+    } else {
+      setShowPassword(true);
+    }
+  };
+
   if (token && token.isLoggedIn === true) {
     return <Navigate state={location.pathname} to="/" replace />;
   }
@@ -107,11 +117,24 @@ const Login = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="*********"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={handleShowPassword}
+                          className="absolute right-4 top-2 cursor-pointer"
+                        >
+                          {showPassword ? (
+                            <EyeOffIcon size={20} color="#6b7280" />
+                          ) : (
+                            <EyeIcon size={20} color="#6b7280" />
+                          )}
+                        </button>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="*********"
+                          {...field}
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

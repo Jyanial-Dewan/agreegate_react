@@ -21,15 +21,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { nodeApi } from "@/services/api";
+import type { method } from "@/hooks/useAxios";
+import useAxios from "@/hooks/useAxios";
+import Loader from "@/components/common/Loader";
+import axios from "axios";
 
 const formSchema = z.object({
-  email: z.email("Type vaild email"),
+  email: z.string().min(2, "Too Short"),
   password: z.string().min(8, "Password must be at least 8 character"),
 });
 
 const Login = () => {
-  const { setIsLoggedIn } = useAuthContext();
+  const { setToken, token } = useAuthContext();
+  const { isLoading, fetchData } = useAxios("node");
+
   const navigate = useNavigate();
+
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,10 +48,25 @@ const Login = () => {
   });
 
   /** Login function */
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    setIsLoggedIn(true);
-    navigate("/");
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const info = {
+      user: values.email,
+      password: values.password,
+    };
+    const params = {
+      url: nodeApi.Login,
+      method: "POST" as method,
+      data: info,
+    };
+    const res = await fetchData(params);
+    if (res?.status === 200) {
+      setToken(res.data);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${token?.access_token}`;
+      localStorage.setItem("token", JSON.stringify(res.data));
+      navigate("/");
+    }
   };
 
   return (
@@ -60,9 +83,13 @@ const Login = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Username or Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="email" {...field} />
+                      <Input
+                        type="text"
+                        placeholder="username or email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -86,7 +113,7 @@ const Login = () => {
                 )}
               />
               <Button type="submit" className="w-full cursor-pointer">
-                Login
+                {isLoading ? <Loader /> : "Login"}
               </Button>
             </form>
           </Form>

@@ -1,3 +1,4 @@
 export const nodeApi = {
-  register: "/combined_users",
+  Login: "/login",
+  User: "/combined_users",
 };

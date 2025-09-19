@@ -1,3 +1,10 @@
+import { Outlet } from "react-router";
+
 export const ProtectedLayout = () => {
-  return <div>ProtectedLayout</div>;
+  return (
+    <div>
+      <Outlet />
+      ProtectedLayout
+    </div>
+  );
 };

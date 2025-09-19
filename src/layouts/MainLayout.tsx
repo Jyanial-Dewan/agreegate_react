@@ -3,9 +3,13 @@ import { ProtectedLayout } from "./ProtectedLayout";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 
 const MainLayout = () => {
-  const { isLoggedIn } = useAuthContext();
+  const { token } = useAuthContext();
   const location = useLocation();
-  if (!isLoggedIn) return <Navigate state={location.pathname} to={"/login"} />;
+
+  if (!token || !token.isLoggedIn || !token.access_token) {
+    return <Navigate state={location.pathname} to="/login" />;
+  }
+
   return <ProtectedLayout />;
 };
 

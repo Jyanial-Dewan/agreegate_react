@@ -64,7 +64,7 @@ const SignUp = () => {
       password: values.password,
     };
     const params = {
-      url: nodeApi.register,
+      url: nodeApi.User + "/register",
       method: "POST" as method,
       data: info,
       isToast: true,

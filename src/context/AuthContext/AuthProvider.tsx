@@ -40,6 +40,23 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
     loadUser();
   }, [token?.user_id, fetchData]);
 
+    useEffect(() => {
+    const getUser = async () => {
+      try {
+        const params = {
+      url: nodeApi.VerifyUser,
+      method: "GET" as method,
+    };
+        const res = await fetchData(params);
+        console.log(res,"verify user")
+        // setToken(res.data);
+      } catch (error) {
+        console.log("Please login.");
+      }
+    };
+    getUser();
+  }, []);
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-[100vh]">

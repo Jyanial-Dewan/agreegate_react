@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import { useAuthContext } from "@/context/AuthContext/useContext";
 
 export type method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -16,6 +17,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
   const [response, setResponse] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const {token}=useAuthContext()
 
   // Keep controller in a ref (avoids mutation issues)
   const controllerRef = useRef<AbortController | null>(null);
@@ -28,16 +30,51 @@ const useAxios = <T>(backend: "flask" | "node") => {
   }, [backend]);
 
   // Request interceptor (example: add auth headers if needed)
-  axiosInstance.interceptors.request.use(
-    (config) => config,
-    (err) => Promise.reject(err)
-  );
+  // axiosInstance.interceptors.request.use(
+  //   (config) => config,
+  //   (err) => Promise.reject(err)
+  // );
 
-  // Response interceptor
-  axiosInstance.interceptors.response.use(
-    (res) => res,
-    (err) => Promise.reject(err)
-  );
+  // // Response interceptor
+  // axiosInstance.interceptors.response.use(
+  //   (res) => res,
+  //   (err) => Promise.reject(err)
+  // );
+  console.log(token,"token")
+  useEffect(() => {
+    const requestInterceptor = axiosInstance.interceptors.request.use(
+      (config) => {
+        if (!config.headers["Authorization"]) {
+          config.headers["Authorization"] = `Bearer ${token?.access_token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    const responseInterceptor = axiosInstance.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        try {
+          // const prevRequest = error?.config;
+          // if (error?.response?.status === 401 && !prevRequest?.sent) {
+          //   prevRequest.sent = true;
+          //   const newAccessToken = await refresh();
+          //   prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          //   return axiosInstance(prevRequest);
+          // }
+        } catch (error) {
+          console.log(error, "axios private error");
+          return;
+        }
+      }
+    );
+
+    return () => {
+      axiosInstance.interceptors.request.eject(requestInterceptor);
+      axiosInstance.interceptors.response.eject(responseInterceptor);
+    };
+  }, [token]);
 
   const fetchData = useCallback(
     async (dataParams: IFetchDataParams) => {
@@ -55,6 +92,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
           data,
           params,
           signal: controllerRef.current.signal,
+          withCredentials: true
         });
         setResponse(result.data.result as T);
 

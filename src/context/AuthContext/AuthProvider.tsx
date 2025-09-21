@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
   }, []);
 
   useEffect(() => {
+    if (!token || token.isLoggedIn === false) return;
     const loadUser = async () => {
       const params = {
         url: `${nodeApi.User}/${token?.user_id}`,

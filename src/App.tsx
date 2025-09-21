@@ -14,6 +14,7 @@ import {
 import * as UAParser from "ua-parser-js";
 import { useEffect } from "react";
 import { Toaster } from "./components/ui/sonner";
+import axios from "axios";
 
 function App() {
   useEffect(() => {
@@ -24,9 +25,9 @@ function App() {
 
   useEffect(() => {
     const fetchIP = async () => {
-      const res = await fetch("https://ipapi.co/json/");
-      const data = await res.json();
-      console.log(data);
+      const res = await axios.get("/api/geo");
+
+      console.log(res);
     };
     fetchIP();
   }, []);

@@ -12,18 +12,9 @@ interface AuthContextProviderProp {
 
 export const AuthProvider = ({ children }: AuthContextProviderProp) => {
   const [token, setToken] = useState<IToken | null>(null);
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<IUser | null>(null);
   const { fetchData } = useAxios("node");
-
-  // useEffect(() => {
-  //   const tokenString = localStorage.getItem("token");
-  //   if (tokenString) {
-  //     const mytoken = JSON.parse(tokenString) as IToken;
-  //     setToken(mytoken);
-  //   }
-  //   setLoading(false);
-  // }, []);
 
   useEffect(() => {
     if (!token || token.isLoggedIn === false) return;
@@ -38,24 +29,26 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
       }
     };
     loadUser();
-  }, [token?.user_id, fetchData]);
+  }, [token, fetchData]);
 
   useEffect(() => {
     const getUser = async () => {
-      try {
-        const params = {
-          url: nodeApi.VerifyUser,
-          method: "GET" as method,
-        };
-        const res = await fetchData(params);
-        if (res?.status === 200) {
-          setToken(res.data);
-        }
-      } catch (error) {
-        console.log("Please login.", error);
+      const params = {
+        url: nodeApi.VerifyUser,
+        method: "GET" as method,
+      };
+      const res = await fetchData(params);
+      if (res?.status === 200) {
+        setToken(res.data);
+        setLoading(false);
       }
+      setLoading(false);
     };
-    getUser();
+    const delay = setTimeout(() => {
+      getUser();
+    }, 300);
+
+    return () => clearTimeout(delay);
   }, [fetchData]);
 
   // if (loading)
@@ -66,7 +59,7 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
   //   );
 
   return (
-    <AuthContext.Provider value={{ token, setToken, user, setUser }}>
+    <AuthContext.Provider value={{ token, setToken, user, setUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

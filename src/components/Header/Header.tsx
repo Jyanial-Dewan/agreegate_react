@@ -15,8 +15,8 @@ const Header = () => {
             to="/home"
             className={({ isActive }) =>
               isActive
-                ? "bg-winter-100 px-2 py-2 rounded-md flex gap-2 items-center hover:bg-hover"
-                : "px-2 py-3  flex gap-2 items-center hover:border-b-2 hover:border-blue-400"
+                ? "bg-yellow-500 px-2 py-3 flex gap-2 items-center hover:border-b-2 hover:border-blue-400"
+                : "px-2 py-3 flex gap-2 items-center hover:border-b-2 hover:border-blue-400"
             }
           >
             <p className="font-semibold hidden lg:block transition duration-300 ease-in-out">

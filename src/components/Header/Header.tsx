@@ -14,7 +14,7 @@ const Header = () => {
 
       <div className="flex gap-1 items-center">
         <NavLink
-          to="/"
+          to="/home"
           className={({ isActive }) =>
             isActive
               ? "bg-winter-100 px-2 py-2 rounded-md flex gap-2 items-center hover:bg-hover"

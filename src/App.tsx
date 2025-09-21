@@ -12,10 +12,33 @@ import {
   engineVersion,
 } from "react-device-detect";
 import * as UAParser from "ua-parser-js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "./components/ui/sonner";
 
 function App() {
+  const [location, setLocation] = useState<{ lat: number; lon: number } | null>(
+    null
+  );
+  const [error, setError] = useState<string | null>(null);
+  console.log(location, error);
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+        },
+        (err) => {
+          setError(err.message);
+        }
+      );
+    } else {
+      setError("Geolocation is not supported by this browser.");
+    }
+  }, []);
   useEffect(() => {
     const parser = new UAParser.UAParser();
     const result = parser.getResult();

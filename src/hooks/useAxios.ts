@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuthContext } from "@/context/AuthContext/useContext";
+import useRefreshToken from "./useRefreshToken";
 
 export type method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -17,7 +18,8 @@ const useAxios = <T>(backend: "flask" | "node") => {
   const [response, setResponse] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const {token}=useAuthContext()
+  const { token } = useAuthContext();
+  const refresh = useRefreshToken();
 
   // Keep controller in a ref (avoids mutation issues)
   const controllerRef = useRef<AbortController | null>(null);
@@ -40,7 +42,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
   //   (res) => res,
   //   (err) => Promise.reject(err)
   // );
-  console.log(token,"token")
+
   useEffect(() => {
     const requestInterceptor = axiosInstance.interceptors.request.use(
       (config) => {
@@ -53,16 +55,16 @@ const useAxios = <T>(backend: "flask" | "node") => {
     );
 
     const responseInterceptor = axiosInstance.interceptors.response.use(
-      (response) => response,
+      (res) => res,
       async (error) => {
         try {
-          // const prevRequest = error?.config;
-          // if (error?.response?.status === 401 && !prevRequest?.sent) {
-          //   prevRequest.sent = true;
-          //   const newAccessToken = await refresh();
-          //   prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-          //   return axiosInstance(prevRequest);
-          // }
+          const prevRequest = error?.config;
+          if (error?.response?.status === 401 && !prevRequest?.sent) {
+            prevRequest.sent = true;
+            const newAccessToken = await refresh();
+            prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+            return axiosInstance(prevRequest);
+          }
         } catch (error) {
           console.log(error, "axios private error");
           return;
@@ -92,7 +94,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
           data,
           params,
           signal: controllerRef.current.signal,
-          withCredentials: true
+          withCredentials: true,
         });
         setResponse(result.data.result as T);
 

@@ -33,7 +33,7 @@ const Dropdown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none">
-        <Avatar className="border">
+        <Avatar className="border cursor-pointer">
           <AvatarImage
             className="object-cover object-center"
             src="https://github.com/shadcn.png"
@@ -50,7 +50,7 @@ const Dropdown = () => {
             to="/update-profile"
             className={({ isActive }) =>
               isActive
-                ? "flex gap-2 items-center w-full text-active"
+                ? "flex gap-2 items-center w-full text-blue-500"
                 : "flex gap-2 items-center w-full"
             }
           >
@@ -61,10 +61,10 @@ const Dropdown = () => {
           </NavLink>
         </div>
         <DropdownMenuSeparator />
-        <div className="p-2 rounded hover:bg-hover text-sm">
+        <div className="p-2 rounded hover:bg-hover text-sm ">
           <button
             onClick={logOut}
-            className="flex gap-2 items-center w-full text-Red-300"
+            className="flex gap-2 items-center w-full text-red-600 cursor-pointer"
           >
             <LogOut size={18} />
             <p className="font-semibold font-workSans text-md">Logout</p>

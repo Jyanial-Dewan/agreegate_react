@@ -14,6 +14,7 @@ import {
 import * as UAParser from "ua-parser-js";
 import { useEffect, useState } from "react";
 import { Toaster } from "./components/ui/sonner";
+// import axios from "axios";
 
 function App() {
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(
@@ -39,20 +40,21 @@ function App() {
       setError("Geolocation is not supported by this browser.");
     }
   }, []);
+
   useEffect(() => {
     const parser = new UAParser.UAParser();
     const result = parser.getResult();
     console.log(result);
   }, []);
 
-  useEffect(() => {
-    const fetchIP = async () => {
-      const res = await fetch("https://ipapi.co/json/");
-      const data = await res.json();
-      console.log(data);
-    };
-    fetchIP();
-  }, []);
+  // useEffect(() => {
+  //   const fetchIP = async () => {
+  //     const res = await axios.get("/api/geo");
+
+  //     console.log(res);
+  //   };
+  //   fetchIP();
+  // }, []);
 
   console.log(
     "browser name: ",

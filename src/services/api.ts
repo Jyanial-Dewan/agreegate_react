@@ -1,4 +1,7 @@
 export const nodeApi = {
-  Login: "/login",
-  User: "/combined_users",
+  Login: "/api/auth/login",
+  User: "/api/combined_users",
+  VerifyUser: "/api/auth/verify_user",
+  RefreshToken: "/api/auth/refresh_token",
+  Logout: "/api/auth/logout",
 };

@@ -9,7 +9,7 @@ const Header = () => {
         {/* <Link to="/">
           <img src={logo} alt="logo" className="h-[2rem] w-auto" />
         </Link> */}
-        <p className="font-semibold">Aggregate React</p>
+        <p className="font-semibold">Aggregate</p>
       </div>
 
       <div className="flex gap-1 items-center">

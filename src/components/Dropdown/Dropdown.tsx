@@ -9,14 +9,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink, useNavigate } from "react-router";
 import { LogOut, User } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
+import useAxios, { type method } from "@/hooks/useAxios";
+import { nodeApi } from "@/services/api";
+// import axios from "axios";
 
 const Dropdown = () => {
   const { setToken, user } = useAuthContext();
   const navigate = useNavigate();
+  const { fetchData } = useAxios("node");
+  const params = {
+    url: nodeApi.Logout,
+    method: "POST" as method,
+    data: {},
+  };
   const logOut = async () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    navigate("/login");
+    const res = await fetchData(params);
+    if (res?.status === 200) {
+      setToken(null);
+      navigate("/login");
+    }
   };
 
   return (

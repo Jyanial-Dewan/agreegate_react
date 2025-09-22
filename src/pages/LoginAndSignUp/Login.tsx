@@ -156,7 +156,7 @@ const Login = () => {
               to={"/signup"}
               className="text-blue-600 hover:text-blue-800 hover:cursor-pointer underline-offset-4 hover:underline"
             >
-              Sign Up
+              Register
             </Link>
           </p>
         </CardFooter>

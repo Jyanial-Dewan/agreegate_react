@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import { useForm } from "react-hook-form";
-import { Link, Navigate, useNavigate } from "react-router";
+import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
@@ -40,7 +40,9 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const from = location.state || "";
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,7 +83,7 @@ const Login = () => {
   };
 
   if (token && token.isLoggedIn === true) {
-    return <Navigate state={location.pathname} to="/" replace />;
+    return <Navigate state={location.pathname} to={from} replace />;
   }
 
   return (

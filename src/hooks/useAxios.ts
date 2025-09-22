@@ -106,10 +106,18 @@ const useAxios = <T>(backend: "flask" | "node") => {
         if (axios.isCancel(err)) {
           console.log("Request cancelled:", (err as Error).message);
         } else if (axios.isAxiosError(err)) {
-          setError(err.message);
-          if (isToast) {
-            toast(err.response?.data ?? err.message);
+          const status = err.response?.status;
+          if (status === 409) {
+            if (isToast) {
+              toast(err.response?.data.message);
+            }
+          } else {
+            setError(err.response?.data.message);
+            if (dataParams.isToast) {
+              toast(err.response?.data.message);
+            }
           }
+          setError(err.message);
         } else if (err instanceof Error) {
           setError(err.message);
           if (isToast) {

@@ -112,7 +112,7 @@ const UpdateProfile = () => {
   };
 
   return (
-    <div className="w-[100vw] h-[100vh] flex justify-center items-center">
+    <div className="mt-2 flex justify-center items-center">
       <Card className="w-full max-w-md mx-auto max-h-[90vh] overflow-auto">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Update Profile</CardTitle>

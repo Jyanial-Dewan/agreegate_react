@@ -5,7 +5,9 @@ export const ProtectedLayout = () => {
   return (
     <div>
       <Header />
-      <Outlet />
+      <div className="pt-[3rem]">
+        <Outlet />
+      </div>
     </div>
   );
 };

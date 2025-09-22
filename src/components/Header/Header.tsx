@@ -5,7 +5,7 @@ import Dropdown from "../Dropdown/Dropdown";
 const Header = () => {
   return (
     <div className="flex justify-between items-center h-[3rem] w-full px-[12px] bg-white shadow-md fixed z-40 ">
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-5 items-center">
         {/* <Link to="/">
           <img src={logo} alt="logo" className="h-[2rem] w-auto" />
         </Link> */}
@@ -40,6 +40,7 @@ const Header = () => {
 
         {/* <Dropdown /> */}
       </div>
+
       <Dropdown />
     </div>
   );

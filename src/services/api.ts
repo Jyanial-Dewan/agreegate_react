@@ -4,4 +4,5 @@ export const nodeApi = {
   VerifyUser: "/api/auth/verify_user",
   RefreshToken: "/api/auth/refresh_token",
   Logout: "/api/auth/logout",
+  IPAdress: "/api/geo",
 };

@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import type { IUser } from "@/types/user.interface";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 
 const formSchema = z
   .object({
@@ -35,7 +36,8 @@ const formSchema = z
   });
 
 const UpdateProfile = () => {
-  const { token, user } = useAuthContext();
+  const { token } = useAuthContext();
+  const { user } = useGlobalContext();
   const { isLoading, fetchData } = useAxios<IUser>("node");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

@@ -4,7 +4,6 @@ import { AuthContext, type IToken } from "./auth-context";
 import { nodeApi } from "@/services/api";
 import type { method } from "@/hooks/useAxios";
 import useAxios from "@/hooks/useAxios";
-import type { IUser } from "@/types/user.interface";
 
 interface AuthContextProviderProp {
   children: ReactNode;
@@ -13,23 +12,8 @@ interface AuthContextProviderProp {
 export const AuthProvider = ({ children }: AuthContextProviderProp) => {
   const [token, setToken] = useState<IToken | null>(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<IUser | null>(null);
-  const { fetchData } = useAxios("node");
 
-  useEffect(() => {
-    if (!token || token.isLoggedIn === false) return;
-    const loadUser = async () => {
-      const params = {
-        url: `${nodeApi.User}/${token?.user_id}`,
-        method: "GET" as method,
-      };
-      const res = await fetchData(params);
-      if (res?.status === 200) {
-        setUser(res.data.result);
-      }
-    };
-    loadUser();
-  }, [token, fetchData]);
+  const { fetchData } = useAxios("node");
 
   useEffect(() => {
     const getUser = async () => {
@@ -59,7 +43,7 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
   //   );
 
   return (
-    <AuthContext.Provider value={{ token, setToken, user, setUser, loading }}>
+    <AuthContext.Provider value={{ token, setToken, loading }}>
       {children}
     </AuthContext.Provider>
   );

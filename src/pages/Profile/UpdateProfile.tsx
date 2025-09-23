@@ -36,7 +36,7 @@ const formSchema = z
 
 const UpdateProfile = () => {
   const { token } = useAuthContext();
-  const { user } = useGlobalContext();
+  const { user, setUser } = useGlobalContext();
   const { fetchData } = useAxios<IUser>("node");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -93,10 +93,10 @@ const UpdateProfile = () => {
 
     if (res?.status === 200) {
       form.reset({
-        username: res.data.result.user_name,
-        firstname: res.data.result.first_name,
-        lastname: res.data.result.last_name,
-        email: res.data.result.email_addresses[0] ?? "",
+        username: res.data.user.user_name,
+        firstname: res.data.user.first_name,
+        lastname: res.data.user.last_name,
+        email: res.data.user.email_addresses[0] ?? "",
         password: "",
         confirm: "",
       });
@@ -141,7 +141,24 @@ const UpdateProfile = () => {
       isToast: true,
     };
 
-    await fetchData(uploadParams);
+    const res = await fetchData(uploadParams);
+    if (res?.status === 200) {
+      setUser((prev: IUser | null) =>
+        prev
+          ? {
+              ...prev,
+              profile_picture: {
+                ...prev.profile_picture,
+                original: `uploads/profiles/${
+                  prev.user_name
+                }/thumbnail.jpg?${Date.now()}`,
+              },
+            }
+          : prev
+      );
+      setPreview("");
+      setFile(null);
+    }
   };
 
   return (
@@ -156,7 +173,8 @@ const UpdateProfile = () => {
           <div className="flex flex-col justify-center items-center">
             <img
               className="h-28 w-28 rounded-full"
-              src="https://github.com/shadcn.png"
+              src={`http://localhost:3000/api/${user?.profile_picture.original}`}
+              alt="Profile"
             />
             <h2 className="font-semibold">
               {user?.first_name} {user?.last_name}
@@ -179,7 +197,10 @@ const UpdateProfile = () => {
               />
             </label>
 
-            <Button onClick={handleUploadPhoto} className="my-3">
+            <Button
+              onClick={handleUploadPhoto}
+              className={file === null ? "cursor-not-allowed my-3" : "my-3"}
+            >
               {loading ? <Loader /> : "Upload"}
             </Button>
           </div>

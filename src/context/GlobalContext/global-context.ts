@@ -8,6 +8,8 @@ export interface GlobalContext {
   deviceInfo: IDevice | null;
   deviceLocation: IDeviceLocation;
   setDeviceLocation: React.Dispatch<React.SetStateAction<IDeviceLocation>>;
+  profilePhoto: string;
+  setProfilePhoto: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const GlobalContext = createContext({} as GlobalContext);

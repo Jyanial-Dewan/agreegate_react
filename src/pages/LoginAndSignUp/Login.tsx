@@ -63,6 +63,7 @@ const Login = () => {
       url: nodeApi.Login,
       method: "POST" as method,
       data: info,
+      isLoading: true,
       setIsLoading,
     };
     const res = await fetchData(params);

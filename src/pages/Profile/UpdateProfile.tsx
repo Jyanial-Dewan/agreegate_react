@@ -37,7 +37,7 @@ const formSchema = z
 const UpdateProfile = () => {
   const { token } = useAuthContext();
   const { user } = useGlobalContext();
-  const { isLoading, fetchData } = useAxios<IUser>("node");
+  const { fetchData } = useAxios<IUser>("node");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [preview, setPreview] = useState<string>("");
@@ -85,6 +85,7 @@ const UpdateProfile = () => {
       url: nodeApi.User + "/" + token?.user_id,
       method: "PUT" as method,
       data: info,
+      isLoading: true,
       setIsLoading,
       isToast: true,
     };
@@ -135,6 +136,7 @@ const UpdateProfile = () => {
       url: `${nodeApi.User}/update_profile_image/${token?.user_id}`,
       method: "PUT" as method,
       data: formData,
+      isLoading: true,
       setIsLoading: setLoading,
       isToast: true,
     };

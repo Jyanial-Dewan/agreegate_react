@@ -11,7 +11,8 @@ interface IFetchDataParams {
   method: method;
   data?: Record<string, unknown> | FormData;
   params?: Record<string, unknown>;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading?: boolean;
+  setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
   isToast?: boolean;
 }
 
@@ -76,7 +77,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
       axiosInstance.interceptors.request.eject(requestInterceptor);
       axiosInstance.interceptors.response.eject(responseInterceptor);
     };
-  }, [token]);
+  }, [token, axiosInstance, refresh]);
 
   const fetchData = useCallback(
     async (dataParams: IFetchDataParams) => {
@@ -86,9 +87,12 @@ const useAxios = <T>(backend: "flask" | "node") => {
         data = {},
         params = {},
         isToast,
+        isLoading,
         setIsLoading,
       } = dataParams;
-      setIsLoading(true);
+      if (isLoading && setIsLoading) {
+        setIsLoading(true);
+      }
       const headers =
         data instanceof FormData ? {} : { "Content-Type": "application/json" };
 
@@ -140,7 +144,9 @@ const useAxios = <T>(backend: "flask" | "node") => {
           }
         }
       } finally {
-        setIsLoading(false);
+        if (isLoading && setIsLoading) {
+          setIsLoading(false);
+        }
       }
     },
     [axiosInstance]

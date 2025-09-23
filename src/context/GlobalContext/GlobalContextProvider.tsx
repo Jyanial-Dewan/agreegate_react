@@ -16,6 +16,7 @@ interface GlobalContextProviderProp {
 export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [deviceInfo, setDeviceInfo] = useState<IDevice | null>(null);
+  const [profilePhoto, setProfilePhoto] = useState("");
   const [deviceLocation, setDeviceLocation] = useState<IDeviceLocation>({
     latitude: 0,
     longitude: 0,
@@ -86,9 +87,37 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
     }
   }, []);
 
+  /** Get Profile Photo */
+
+  useEffect(() => {
+    if (!token || token.isLoggedIn === false || !user?.profile_picture) return;
+
+    const fetchProfile = async () => {
+      const profileParams = {
+        url: `/api/${user?.profile_picture.original}`,
+        method: "GET" as method,
+      };
+      console.log(profileParams.url);
+      const res = await fetchData(profileParams);
+      if (res?.status === 200) {
+        setProfilePhoto(res.data);
+      }
+    };
+
+    fetchProfile();
+  }, [token, fetchData, user?.profile_picture]);
+
   return (
     <GlobalContext.Provider
-      value={{ user, setUser, deviceInfo, deviceLocation, setDeviceLocation }}
+      value={{
+        user,
+        setUser,
+        deviceInfo,
+        deviceLocation,
+        setDeviceLocation,
+        profilePhoto,
+        setProfilePhoto,
+      }}
     >
       {children}
     </GlobalContext.Provider>

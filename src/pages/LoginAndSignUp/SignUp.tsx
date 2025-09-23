@@ -41,8 +41,9 @@ const formSchema = z
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const { isLoading, fetchData } = useAxios("node");
+  const { fetchData } = useAxios("node");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
@@ -71,6 +72,8 @@ const SignUp = () => {
       url: nodeApi.User + "/register",
       method: "POST" as method,
       data: info,
+      isLoading: true,
+      setIsLoading,
       isToast: true,
     };
     const res = await fetchData(params);

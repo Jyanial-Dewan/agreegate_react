@@ -1,8 +1,14 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 
 const Home = () => {
-  const position: [number, number] = [23.7915178, 90.3713319]; // lat, lon
+  const { deviceLocation } = useGlobalContext();
+  console.log(deviceLocation);
+  const position: [number, number] = [
+    deviceLocation.latitude,
+    deviceLocation.longitude,
+  ]; // lat, lon
 
   return (
     <div className="flex gap-4">
@@ -21,7 +27,7 @@ const Home = () => {
       </MapContainer>
 
       <iframe
-        src={`https://www.google.com/maps?q=23.7915178,90.3713319&z=15&output=embed`}
+        src={`https://www.google.com/maps?q=${deviceLocation.latitude},${deviceLocation.longitude}&z=15&output=embed`}
         width="50%"
         height="400"
         style={{ border: 0 }}

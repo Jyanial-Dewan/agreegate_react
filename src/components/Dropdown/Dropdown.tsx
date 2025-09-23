@@ -11,10 +11,12 @@ import { LogOut, User } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
+import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 // import axios from "axios";
 
 const Dropdown = () => {
-  const { setToken, user } = useAuthContext();
+  const { setToken } = useAuthContext();
+  const { user } = useGlobalContext();
   const navigate = useNavigate();
   const { fetchData } = useAxios("node");
   const params = {

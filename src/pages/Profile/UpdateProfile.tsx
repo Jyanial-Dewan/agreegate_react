@@ -166,7 +166,7 @@ const UpdateProfile = () => {
       <div className="w-96 flex flex-col border shadow-md">
         {/* Header */}
         <div className="flex mb-2 items-center h-12 bg-gray-200 border-b border-gray-500">
-          <h3 className="px-5">Profile Photo</h3>
+          <h3 className="px-5 font-bold text-xl">Profile Photo</h3>
         </div>
         {/* Content area */}
         <div className="flex-1 flex justify-center items-center">
@@ -179,7 +179,7 @@ const UpdateProfile = () => {
             <h2 className="font-semibold">
               {user?.first_name} {user?.last_name}
             </h2>
-            <p className="py-3">JPG or PNG no larger than 5 MB</p>
+            <p className="py-3">JPG or PNG no larger than 200KB</p>
 
             <label className="border rounded-sm cursor-pointer">
               <div className="flex justify-center items-center w-80 h-30">
@@ -198,8 +198,9 @@ const UpdateProfile = () => {
             </label>
 
             <Button
+              disabled={file === null || loading}
               onClick={handleUploadPhoto}
-              className={file === null ? "cursor-not-allowed my-3" : "my-3"}
+              className="cursor-pointer my-3"
             >
               {loading ? <Loader /> : "Upload"}
             </Button>
@@ -209,7 +210,7 @@ const UpdateProfile = () => {
       <div>
         {/* Update Profile */}
         <div className="flex items-center h-12 bg-gray-200 border-b border-gray-500">
-          <h3 className="px-5">Profile Details</h3>
+          <h3 className="px-5 font-bold text-xl">Profile Details</h3>
         </div>
         <div className="p-5 border shadow-md">
           <Form {...form}>
@@ -332,7 +333,7 @@ const UpdateProfile = () => {
                   />
                 </div>
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full cursor-pointer">
                 {isLoading ? <Loader /> : "Update"}
               </Button>
             </form>

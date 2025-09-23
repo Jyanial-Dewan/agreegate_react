@@ -15,7 +15,7 @@ import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 // import axios from "axios";
 
 const Dropdown = () => {
-  const { setToken } = useAuthContext();
+  const { setToken, token } = useAuthContext();
   const { user } = useGlobalContext();
   const navigate = useNavigate();
   const { fetchData } = useAxios("node");
@@ -38,9 +38,9 @@ const Dropdown = () => {
         <Avatar className="border cursor-pointer">
           <AvatarImage
             className="object-cover object-center"
-            src="https://github.com/shadcn.png"
+            src={`http://localhost:3000/api/${user?.profile_picture.original}`}
           />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>{token?.user_name.slice(0, 1)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 mr-1">

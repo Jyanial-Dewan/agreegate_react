@@ -3,6 +3,7 @@ import { createContext } from "react";
 export interface IToken {
   isLoggedIn: boolean;
   user_id: number;
+  user_name: string;
   access_token: string;
   refresh_token: string;
   issuedAt: string;

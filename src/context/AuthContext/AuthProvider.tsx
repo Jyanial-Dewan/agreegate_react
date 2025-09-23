@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
       const params = {
         url: nodeApi.VerifyUser,
         method: "GET" as method,
+        setIsLoading: setLoading,
       };
       const res = await fetchData(params);
       if (res?.status === 200) {

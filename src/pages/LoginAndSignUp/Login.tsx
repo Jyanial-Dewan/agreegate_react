@@ -36,8 +36,9 @@ const formSchema = z.object({
 
 const Login = () => {
   const { setToken, token } = useAuthContext();
-  const { isLoading, fetchData, error } = useAxios("node");
+  const { fetchData, error } = useAxios("node");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,6 +63,8 @@ const Login = () => {
       url: nodeApi.Login,
       method: "POST" as method,
       data: info,
+      isLoading: true,
+      setIsLoading,
     };
     const res = await fetchData(params);
     if (res?.status === 200) {

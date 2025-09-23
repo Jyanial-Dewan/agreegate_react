@@ -9,14 +9,14 @@ export type method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 interface IFetchDataParams {
   url: string;
   method: method;
-  data?: Record<string, unknown>;
+  data?: Record<string, unknown> | FormData;
   params?: Record<string, unknown>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isToast?: boolean;
 }
 
 const useAxios = <T>(backend: "flask" | "node") => {
   const [response, setResponse] = useState<T | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const { token } = useAuthContext();
   const refresh = useRefreshToken();
@@ -80,8 +80,17 @@ const useAxios = <T>(backend: "flask" | "node") => {
 
   const fetchData = useCallback(
     async (dataParams: IFetchDataParams) => {
-      const { url, method, data = {}, params = {}, isToast } = dataParams;
+      const {
+        url,
+        method,
+        data = {},
+        params = {},
+        isToast,
+        setIsLoading,
+      } = dataParams;
       setIsLoading(true);
+      const headers =
+        data instanceof FormData ? {} : { "Content-Type": "application/json" };
 
       // Cancel any previous request
       controllerRef.current?.abort();
@@ -95,6 +104,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
           params,
           signal: controllerRef.current.signal,
           withCredentials: true,
+          headers,
         });
         setResponse(result.data.result as T);
 
@@ -143,7 +153,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
     };
   }, []);
 
-  return { response, isLoading, error, fetchData };
+  return { response, error, fetchData };
 };
 
 export default useAxios;

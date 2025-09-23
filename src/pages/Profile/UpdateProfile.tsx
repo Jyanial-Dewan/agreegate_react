@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -36,9 +35,13 @@ const formSchema = z
 
 const UpdateProfile = () => {
   const { token, user } = useAuthContext();
-  const { isLoading, fetchData } = useAxios<IUser>("node");
+  const { fetchData } = useAxios<IUser>("node");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [preview, setPreview] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
@@ -80,6 +83,7 @@ const UpdateProfile = () => {
       url: nodeApi.User + "/" + token?.user_id,
       method: "PUT" as method,
       data: info,
+      setIsLoading,
       isToast: true,
     };
     const res = await fetchData(params);
@@ -111,13 +115,78 @@ const UpdateProfile = () => {
     }
   };
 
+  const handleChangePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      const url = URL.createObjectURL(selectedFile);
+      setPreview(url);
+    }
+  };
+
+  const handleUploadPhoto = async () => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("profileImage", file);
+    const uploadParams = {
+      url: `${nodeApi.User}/update_profile_image/${token?.user_id}`,
+      method: "PUT" as method,
+      data: formData,
+      setIsLoading: setLoading,
+      isToast: true,
+    };
+
+    await fetchData(uploadParams);
+  };
+
   return (
-    <div className="mt-2 flex justify-center items-center">
-      <Card className="w-full max-w-md mx-auto max-h-[90vh] overflow-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Update Profile</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div className="flex gap-3 justify-center">
+      <div className="w-96 flex flex-col border shadow-md">
+        {/* Header */}
+        <div className="flex mb-2 items-center h-12 bg-gray-200 border-b border-gray-500">
+          <h3 className="px-5">Profile Photo</h3>
+        </div>
+        {/* Content area */}
+        <div className="flex-1 flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center">
+            <img
+              className="h-28 w-28 rounded-full"
+              src="https://github.com/shadcn.png"
+            />
+            <h2 className="font-semibold">
+              {user?.first_name} {user?.last_name}
+            </h2>
+            <p className="py-3">JPG or PNG no larger than 5 MB</p>
+
+            <label className="border rounded-sm cursor-pointer">
+              <div className="flex justify-center items-center w-80 h-30">
+                {preview ? (
+                  <img className="w-25 h-25 rounded-full" src={preview} />
+                ) : (
+                  <p className="text-gray-600">Drop Photo</p>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/png, image/jpeg"
+                className="hidden"
+                onChange={handleChangePhoto}
+              />
+            </label>
+
+            <Button onClick={handleUploadPhoto} className="my-3">
+              {loading ? <Loader /> : "Upload"}
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div>
+        {/* Update Profile */}
+        <div className="flex items-center h-12 bg-gray-200 border-b border-gray-500">
+          <h3 className="px-5">Profile Details</h3>
+        </div>
+        <div className="p-5 border shadow-md">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="flex flex-col gap-3">
@@ -243,8 +312,8 @@ const UpdateProfile = () => {
               </Button>
             </form>
           </Form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

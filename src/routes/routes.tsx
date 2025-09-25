@@ -1,4 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
+import ChangePassword from "@/pages/ChangePassword/ChangePassword";
 import Error from "@/pages/ErrorPage/Error";
 import Home from "@/pages/Home/Home";
 import Login from "@/pages/LoginAndSignUp/Login";
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "/update-profile",
         element: <UpdateProfile />,
+      },
+      {
+        path: "/change-password",
+        element: <ChangePassword />,
       },
     ],
   },

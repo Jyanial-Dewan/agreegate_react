@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink, useNavigate } from "react-router";
-import { LogOut, User } from "lucide-react";
+import { LockKeyholeOpen, LogOut, User } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
@@ -59,6 +59,19 @@ const Dropdown = () => {
             <User size={18} />
             <p className="font-semibold font-workSans text-md">
               Update Profile
+            </p>
+          </NavLink>
+          <NavLink
+            to="/change-password"
+            className={({ isActive }) =>
+              isActive
+                ? "flex gap-2 items-center w-full text-blue-500"
+                : "flex gap-2 items-center w-full"
+            }
+          >
+            <LockKeyholeOpen size={18} />
+            <p className="font-semibold font-workSans text-md mt-2">
+              Change Password
             </p>
           </NavLink>
         </div>

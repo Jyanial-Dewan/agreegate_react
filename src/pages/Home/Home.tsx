@@ -4,7 +4,7 @@ import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 
 const Home = () => {
   const { deviceLocation } = useGlobalContext();
-  console.log(deviceLocation);
+
   const position: [number, number] = [
     deviceLocation.latitude,
     deviceLocation.longitude,

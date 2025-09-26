@@ -5,4 +5,6 @@ export const nodeApi = {
   RefreshToken: "/api/auth/refresh_token",
   Logout: "/api/auth/logout",
   IPAdress: "/api/geo",
+  ClientInfo: "/api/client_info",
+  ClientLocationInfo: "/api/client_location_info",
 };

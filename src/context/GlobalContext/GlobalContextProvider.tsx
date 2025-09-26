@@ -2,12 +2,16 @@ import type { method } from "@/hooks/useAxios";
 import useAxios from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import type { IUser } from "@/types/user.interface";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { GlobalContext } from "./global-context";
 import { useAuthContext } from "../AuthContext/useContext";
-import type { IDevice, IDeviceLocation } from "@/types/deviceInfo.interface";
+import type {
+  IClientInfo,
+  IClientLocationInfo,
+} from "@/types/deviceInfo.interface";
 
 import * as UAParser from "ua-parser-js";
+import { io } from "socket.io-client";
 
 interface GlobalContextProviderProp {
   children: ReactNode;
@@ -15,13 +19,26 @@ interface GlobalContextProviderProp {
 
 export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
   const [user, setUser] = useState<IUser | null>(null);
-  const [deviceInfo, setDeviceInfo] = useState<IDevice | null>(null);
-  const [deviceLocation, setDeviceLocation] = useState<IDeviceLocation>({
+  const [deviceInfo, setDeviceInfo] = useState<IClientInfo | null>(null);
+  const [deviceLocation, setDeviceLocation] = useState<IClientLocationInfo>({
     latitude: 0,
     longitude: 0,
   });
-  const { fetchData } = useAxios("node");
   const { token } = useAuthContext();
+
+  const socket_url = import.meta.env.VITE_SOCKET_URL;
+  // Memoize the socket connection so that it's created only once
+  const socket = useMemo(() => {
+    return io(socket_url, {
+      path: "/socket.io/",
+      query: {
+        user_id: token?.user_id,
+        device_id: deviceInfo?.device_id,
+      },
+      transports: ["websocket"],
+    });
+  }, [socket_url, token?.user_id, deviceInfo?.device_id]);
+  const { fetchData } = useAxios("node");
 
   useEffect(() => {
     if (!token || token.isLoggedIn === false) return;
@@ -86,9 +103,47 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
     }
   }, []);
 
+  useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("IP Info:", data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  useEffect(() => {
+    const storedValue = localStorage.getItem("ClientInfo");
+    if (storedValue) {
+      const parsed: IClientInfo = JSON.parse(storedValue);
+      setDeviceInfo(parsed);
+    }
+  }, []);
+
+  const handleEmitClientLocation = () => {
+    socket.emit("ClientLocation", {
+      ...deviceLocation,
+      device_id: deviceInfo?.device_id,
+      user_id: token?.user_id,
+    });
+  };
+
+  const handleSocketDisconnect = () => {
+    socket.disconnect();
+  };
+
   return (
     <GlobalContext.Provider
-      value={{ user, setUser, deviceInfo, deviceLocation, setDeviceLocation }}
+      value={{
+        user,
+        setUser,
+        deviceInfo,
+        deviceLocation,
+        setDeviceLocation,
+        setDeviceInfo,
+        handleEmitClientLocation,
+        handleSocketDisconnect,
+      }}
     >
       {children}
     </GlobalContext.Provider>

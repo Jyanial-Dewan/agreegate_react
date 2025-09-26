@@ -76,7 +76,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
       axiosInstance.interceptors.request.eject(requestInterceptor);
       axiosInstance.interceptors.response.eject(responseInterceptor);
     };
-  }, [token]);
+  }, [axiosInstance, refresh, token]);
 
   const fetchData = useCallback(
     async (dataParams: IFetchDataParams) => {
@@ -96,6 +96,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
           signal: controllerRef.current.signal,
           withCredentials: true,
         });
+
         setResponse(result.data.result as T);
 
         if (isToast) {

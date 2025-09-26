@@ -16,7 +16,7 @@ import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 
 const Dropdown = () => {
   const { setToken } = useAuthContext();
-  const { user } = useGlobalContext();
+  const { user, handleSocketDisconnect } = useGlobalContext();
   const navigate = useNavigate();
   const { fetchData } = useAxios("node");
   const params = {
@@ -28,7 +28,9 @@ const Dropdown = () => {
     const res = await fetchData(params);
     if (res?.status === 200) {
       setToken(null);
+      localStorage.removeItem("ClientInfo");
       navigate("/login");
+      handleSocketDisconnect();
     }
   };
 

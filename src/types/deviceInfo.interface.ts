@@ -1,29 +1,30 @@
-export interface IDevice {
-  browserName?: string;
-  browserVersion?: string;
-  browserType?: string;
-  cpuArchitecture?: string;
-  deviceType?: string;
-  deviceModel?: string;
-  deviceVendor?: string;
-  engineName?: string;
-  engineVersion?: string;
-  osName?: string;
-  osVersion?: string;
-  userAgent?: string;
-  ipAddress?: string;
+export interface IClientInfo {
+  device_id?: number;
+  browser_name?: string;
+  browser_version?: string;
+  browser_type?: string;
+  cpu_architecture?: string;
+  device_type?: string;
+  device_model?: string;
+  device_vendor?: string;
+  engine_name?: string;
+  engine_version?: string;
+  os_name?: string;
+  os_version?: string;
+  user_agent?: string;
+  ip_address?: string;
   zip?: string;
   timezone?: string;
-  regionName?: string;
+  region_name?: string;
   region?: string;
-  ipOrg?: string;
-  countryCode?: string;
+  ip_org?: string;
+  country_code?: string;
   country?: string;
   city?: string;
-  autonomusSystem?: string;
+  autonomus_system?: string;
 }
 
-export interface IDeviceLocation {
+export interface IClientLocationInfo {
   latitude: number;
   longitude: number;
 }

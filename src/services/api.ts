@@ -7,4 +7,5 @@ export const nodeApi = {
   IPAdress: "/api/geo",
   ClientInfo: "/api/client_info",
   ClientLocationInfo: "/api/client_location_info",
+  Profile: "/api/uploads/profiles/:user_name/thumbnail.jpg",
 };

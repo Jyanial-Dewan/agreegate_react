@@ -42,6 +42,7 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
 
   useEffect(() => {
     if (!token || token.isLoggedIn === false) return;
+
     const loadUser = async () => {
       const params = {
         url: `${nodeApi.User}/${token?.user_id}`,
@@ -62,7 +63,6 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
         method: "GET" as method,
       };
       const res = await fetchData(params);
-      console.log(res);
 
       if (res?.status === 200) {
         const result = res.data;

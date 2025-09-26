@@ -37,7 +37,9 @@ const formSchema = z.object({
 
 const Login = () => {
   const { setToken, token } = useAuthContext();
+
   const { deviceInfo, setDeviceInfo } = useGlobalContext();
+
   const { fetchData, error } = useAxios("node");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

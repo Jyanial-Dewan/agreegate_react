@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import { useForm } from "react-hook-form";
-import { Link, Navigate, useLocation, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
@@ -28,6 +28,7 @@ import Loader from "@/components/common/Loader";
 import axios from "axios";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
+import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 
 const formSchema = z.object({
   email: z.string().min(2, "Too Short"),
@@ -36,14 +37,17 @@ const formSchema = z.object({
 
 const Login = () => {
   const { setToken, token } = useAuthContext();
+
+  const { deviceInfo, setDeviceInfo } = useGlobalContext();
+
   const { fetchData, error } = useAxios("node");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
 
-  const from = location.state || "";
+  // const from = location.state || "";
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,13 +71,34 @@ const Login = () => {
       setIsLoading,
     };
     const res = await fetchData(params);
+
     if (res?.status === 200) {
       setToken(res.data);
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${token?.access_token}`;
-      // localStorage.setItem("token", JSON.stringify(res.data));
-      navigate("/");
+      // console.log(res.data.user_id, deviceInfo);
+      const clientInfoParams = {
+        url: nodeApi.ClientInfo,
+        method: "POST" as method,
+        data: { userId: res.data.user_id, ...deviceInfo },
+      };
+      const clientInfoResponse = await fetchData(clientInfoParams);
+      console.log(clientInfoResponse);
+      if (
+        clientInfoResponse?.status === 201 ||
+        clientInfoResponse?.status === 200
+      ) {
+        setDeviceInfo((prev) => ({
+          ...prev,
+          deviceId: clientInfoResponse.data.result.device_id,
+        }));
+        localStorage.setItem(
+          "ClientInfo",
+          JSON.stringify(clientInfoResponse.data.result)
+        );
+        navigate("/");
+      }
     }
   };
 
@@ -85,9 +110,9 @@ const Login = () => {
     }
   };
 
-  if (token && token.isLoggedIn === true) {
-    return <Navigate state={location.pathname} to={from} replace />;
-  }
+  // if (token && token.isLoggedIn && deviceInfo?.deviceId) {
+  //   return <Navigate state={location.pathname} to={from} replace />;
+  // }
 
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">

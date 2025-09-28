@@ -135,6 +135,7 @@ const useAxios = <T>(backend: "flask" | "node") => {
         } else if (err instanceof Error) {
           setError(err.message);
           if (isToast) {
+            console.log(err, "dsfdsf");
             toast(err.message);
           }
         } else {

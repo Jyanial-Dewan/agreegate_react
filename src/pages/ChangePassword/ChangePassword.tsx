@@ -18,7 +18,6 @@ import { useState } from "react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import type { IUser } from "@/types/user.interface";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-// import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 
 const formSchema = z
   .object({
@@ -54,9 +53,10 @@ const ChangePassword = () => {
       old_password: values.old_password,
       new_password: values.new_password,
     };
+
     const params = {
-      url: nodeApi.User + "/" + token?.user_id,
-      method: "PUT" as method,
+      url: `${nodeApi.User}/change_password/${token?.user_id}`,
+      method: "POST" as method,
       data: info,
       isLoading: true,
       setIsLoading,

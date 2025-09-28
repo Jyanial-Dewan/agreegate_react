@@ -5,5 +5,4 @@ export const nodeApi = {
   RefreshToken: "/api/auth/refresh_token",
   Logout: "/api/auth/logout",
   IPAdress: "/api/geo",
-  Profile: "/api/uploads/profiles/:user_name/thumbnail.jpg",
 };

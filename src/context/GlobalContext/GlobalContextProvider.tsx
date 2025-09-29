@@ -21,6 +21,7 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [deviceInfo, setDeviceInfo] = useState<IClientInfo | null>(null);
   const [deviceLocation, setDeviceLocation] = useState<IClientLocationInfo>({
+    connection_id: "",
     latitude: 0,
     longitude: 0,
   });
@@ -45,7 +46,7 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
 
     const loadUser = async () => {
       const params = {
-        url: `${nodeApi.User}/${token?.user_id}`,
+        url: `${nodeApi.User}?user_id=${token.user_id}`,
         method: "GET" as method,
       };
       const res = await fetchData(params);
@@ -54,7 +55,7 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
       }
     };
     loadUser();
-  }, [token, fetchData]);
+  }, [fetchData, token]);
 
   useEffect(() => {
     const fetchIP = async () => {
@@ -69,15 +70,15 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
         setDeviceInfo((prev) => ({
           ...prev,
           country: result.country,
-          countryCode: result.countryCode,
+          country_code: result.countryCode,
           region: result.region,
-          regionName: result.regionName,
+          region_name: result.regionName,
           city: result.city,
           zip: result.zip,
           timezone: result.timezone,
-          ipOrg: result.org,
-          ipAddress: result.query,
-          autonomusSystem: result.as,
+          ip_org: result.org,
+          ip_address: result.query,
+          autonomus_system: result.as,
         }));
       }
     };
@@ -90,15 +91,15 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
     if (result) {
       setDeviceInfo((prev) => ({
         ...prev,
-        browserName: result.browser.name,
-        browserVersion: result.browser.version,
-        browserType: result.browser.type,
-        cpuArchitecture: result.cpu.architecture,
-        engineName: result.engine.name,
-        engineVersion: result.engine.version,
-        osName: result.os.name,
-        osVersion: result.os.version,
-        userAgent: result.ua,
+        browser_name: result.browser.name,
+        browser_version: result.browser.version,
+        browser_type: result.browser.type,
+        cpu_architecture: result.cpu.architecture,
+        engine_name: result.engine.name,
+        engine_version: result.engine.version,
+        os_name: result.os.name,
+        os_version: result.os.version,
+        user_agent: result.ua,
       }));
     }
   }, []);

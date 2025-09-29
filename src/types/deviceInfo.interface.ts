@@ -25,6 +25,9 @@ export interface IClientInfo {
 }
 
 export interface IClientLocationInfo {
+  connection_id: string;
   latitude: number;
   longitude: number;
+  connection_time?: Date;
+  disconnection_time?: Date;
 }

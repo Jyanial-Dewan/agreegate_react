@@ -81,7 +81,7 @@ const Login = () => {
       const clientInfoParams = {
         url: nodeApi.ClientInfo,
         method: "POST" as method,
-        data: { userId: res.data.user_id, ...deviceInfo },
+        data: { user_id: res.data.user_id, ...deviceInfo },
       };
       const clientInfoResponse = await fetchData(clientInfoParams);
       console.log(clientInfoResponse);

@@ -15,7 +15,7 @@ import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 // import axios from "axios";
 
 const Dropdown = () => {
-  const { setToken, token } = useAuthContext();
+  const { setToken } = useAuthContext();
 
   const { user, handleSocketDisconnect } = useGlobalContext();
 
@@ -44,7 +44,7 @@ const Dropdown = () => {
             className="object-cover object-center"
             src={`http://localhost:3000/api/${user?.profile_picture.original}`}
           />
-          <AvatarFallback>{token?.user_name.slice(0, 1)}</AvatarFallback>
+          <AvatarFallback>{user?.first_name.slice(0, 1)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 mr-1">

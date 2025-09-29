@@ -150,7 +150,7 @@ const UpdateProfile = () => {
               profile_picture: {
                 ...prev.profile_picture,
                 original: `uploads/profiles/${
-                  prev.user_name
+                  prev.user_id
                 }/thumbnail.jpg?${Date.now()}`,
               },
             }

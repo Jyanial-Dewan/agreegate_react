@@ -11,7 +11,6 @@ export interface IToken {
 
 export interface AuthContext {
   token: IToken | null;
-
   loading: boolean;
   setToken: React.Dispatch<React.SetStateAction<IToken | null>>;
 }

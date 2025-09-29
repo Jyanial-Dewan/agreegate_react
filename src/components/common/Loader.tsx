@@ -1,21 +1,24 @@
 import { LineSpinner } from "ldrs/react";
 import "ldrs/react/LineSpinner.css";
 
+// Default values shown
+<LineSpinner size="40" stroke="3" speed="1" color="black" />;
+
 interface props {
   size?: string;
-  strock?: string;
+  stroke?: string;
   speed?: string;
   color?: string;
 }
 
-const Loader = ({ size, strock, speed, color }: props) => {
+const Loader = ({
+  size = "25",
+  stroke = "3",
+  speed = "1",
+  color = "black",
+}: props) => {
   return (
-    <LineSpinner
-      size={size ? size : "25"}
-      stroke={strock ? strock : "3"}
-      speed={speed ? speed : "1"}
-      color={color ? color : "white"}
-    />
+    <LineSpinner size={size} color={color} stroke={stroke} speed={speed} />
   );
 };
 

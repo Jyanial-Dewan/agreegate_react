@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink, useNavigate } from "react-router";
-import { LogOut, User } from "lucide-react";
+import { Laptop, LogOut, User } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
@@ -56,8 +56,8 @@ const Dropdown = () => {
             to="/update-profile"
             className={({ isActive }) =>
               isActive
-                ? "flex gap-2 items-center w-full text-blue-500"
-                : "flex gap-2 items-center w-full"
+                ? "flex gap-2 items-center w-full hover:scale-90 duration-300 py-1 text-blue-500"
+                : "flex gap-2 items-center w-full hover:scale-90 duration-300 py-1"
             }
           >
             <User size={18} />
@@ -65,12 +65,23 @@ const Dropdown = () => {
               Update Profile
             </p>
           </NavLink>
+          <NavLink
+            to="/my-devices"
+            className={({ isActive }) =>
+              isActive
+                ? "flex gap-2 items-center w-full hover:scale-90 duration-300 py-1 text-blue-500"
+                : "flex gap-2 items-center w-full hover:scale-90 duration-300 py-1"
+            }
+          >
+            <Laptop size={18} />
+            <p className="font-semibold font-workSans text-md">My Devices</p>
+          </NavLink>
         </div>
         <DropdownMenuSeparator />
         <div className="p-2 rounded hover:bg-hover text-sm ">
           <button
             onClick={logOut}
-            className="flex gap-2 items-center w-full text-red-600 cursor-pointer"
+            className="flex gap-2 items-center w-full hover:scale-90 duration-300 text-red-600 cursor-pointer"
           >
             <LogOut size={18} />
             <p className="font-semibold font-workSans text-md">Logout</p>

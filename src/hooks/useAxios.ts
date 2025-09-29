@@ -77,7 +77,9 @@ const useAxios = <T>(backend: "flask" | "node") => {
       axiosInstance.interceptors.request.eject(requestInterceptor);
       axiosInstance.interceptors.response.eject(responseInterceptor);
     };
-  }, [axiosInstance, refresh, token]);
+
+  }, [token, axiosInstance, refresh]);
+
 
   const fetchData = useCallback(
     async (dataParams: IFetchDataParams) => {

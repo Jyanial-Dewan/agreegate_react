@@ -141,9 +141,11 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
         deviceInfo,
         deviceLocation,
         setDeviceLocation,
+
         setDeviceInfo,
         handleEmitClientLocation,
         handleSocketDisconnect,
+
       }}
     >
       {children}

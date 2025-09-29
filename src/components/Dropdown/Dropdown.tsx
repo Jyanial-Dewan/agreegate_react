@@ -16,7 +16,9 @@ import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 
 const Dropdown = () => {
   const { setToken, token } = useAuthContext();
+
   const { user, handleSocketDisconnect } = useGlobalContext();
+
   const navigate = useNavigate();
   const { fetchData } = useAxios("node");
   const params = {

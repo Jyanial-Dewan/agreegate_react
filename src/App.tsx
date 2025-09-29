@@ -32,7 +32,7 @@ function App() {
     if (token?.user_id && deviceInfo?.device_id) {
       handleEmitClientLocation();
     }
-  }, [deviceInfo?.deviceId, token?.user_id]);
+  }, [deviceInfo?.device_id, token?.user_id]);
   return (
     <div>
       <Toaster />

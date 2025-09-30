@@ -72,7 +72,6 @@ const SignUp = () => {
       url: nodeApi.User + "/register",
       method: "POST" as method,
       data: info,
-      isLoading: true,
       setIsLoading,
       isToast: true,
     };

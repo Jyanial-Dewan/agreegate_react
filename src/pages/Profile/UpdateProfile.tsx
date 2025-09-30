@@ -85,7 +85,6 @@ const UpdateProfile = () => {
       url: nodeApi.User + "/" + token?.user_id,
       method: "PUT" as method,
       data: info,
-      isLoading: true,
       setIsLoading,
       isToast: true,
     };
@@ -136,7 +135,6 @@ const UpdateProfile = () => {
       url: `${nodeApi.User}/update_profile_image/${token?.user_id}`,
       method: "PUT" as method,
       data: formData,
-      isLoading: true,
       setIsLoading: setLoading,
       isToast: true,
     };

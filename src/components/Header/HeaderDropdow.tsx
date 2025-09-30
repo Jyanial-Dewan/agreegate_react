@@ -14,7 +14,7 @@ import { nodeApi } from "@/services/api";
 import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 // import axios from "axios";
 
-const Dropdown = () => {
+const HeaderDropdown = () => {
   const { setToken } = useAuthContext();
 
   const { user, handleSocketDisconnect } = useGlobalContext();
@@ -92,4 +92,4 @@ const Dropdown = () => {
   );
 };
 
-export default Dropdown;
+export default HeaderDropdown;

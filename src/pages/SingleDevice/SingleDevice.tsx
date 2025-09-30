@@ -18,45 +18,37 @@ const SingleDevice = () => {
   const { fetchData } = useAxios("node");
   const [info, setInfo] = useState<IClientInfo | null>(null);
   const [locationInfos, setLocationInfos] = useState<IClientLocationInfo[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  console.log(info, locationInfos);
+  console.log(loading);
 
   //Load Device Data
   useEffect(() => {
-    if (token?.user_id && device_id) {
-      const loadClients = async () => {
-        console.log(
-          `${nodeApi.ClientInfo}?user_id=${token.user_id}&device_id=${device_id}`
-        );
-        const infoParams = {
-          url: `${nodeApi.ClientInfo}?user_id=${token.user_id}&device_id=${device_id}`,
-          method: "GET" as method,
-          isLoading: loading,
-          setIsLoading: setLoading,
-        };
-        const res = await fetchData(infoParams);
-        console.log(res);
-        if (res?.status === 200) {
-          setInfo(res.data.result);
-        }
-
-        const locationParams = {
-          url: `${nodeApi.ClientLocationInfo}?device_id=${device_id}&user_id=${token.user_id}&page=1&limit=10`,
-          method: "GET" as method,
-          isLoading: loading,
-          setIsLoading: setLoading,
-        };
-        const locationRes = await fetchData(locationParams);
-        console.log(locationRes);
-
-        if (res?.status === 200) {
-          setLocationInfos(locationRes?.data.result);
-        }
+    const loadClients = async () => {
+      const infoParams = {
+        url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}&device_id=${device_id}`,
+        method: "GET" as method,
+        setIsLoading: setLoading,
       };
-      loadClients();
-    }
-  }, [fetchData, token?.user_id, device_id]);
+      const res = await fetchData(infoParams);
+
+      if (res?.status === 200) {
+        setInfo(res.data.result);
+      }
+
+      const locationParams = {
+        url: `${nodeApi.ClientLocationInfo}?device_id=${device_id}&user_id=${token?.user_id}&page=1&limit=10`,
+        method: "GET" as method,
+        setIsLoading: setLoading,
+      };
+      const locationRes = await fetchData(locationParams);
+
+      if (locationRes?.status === 200) {
+        setLocationInfos(locationRes?.data.result);
+      }
+    };
+    loadClients();
+  }, [token?.user_id, device_id, loading]);
 
   return (
     <div className="p-4">
@@ -93,17 +85,19 @@ const SingleDevice = () => {
                 <p>Operating System Name: {info?.os_name}</p>
                 <p>Operating System Version: {info?.os_version}</p>
               </div>
-              <div className="flex flex-col gap-4">
-                <p>Last Login Location</p>
-                <iframe
-                  src={`https://www.google.com/maps?q=${locationInfos[0]?.latitude},${locationInfos[0]?.longitude}&z=15&output=embed`}
-                  width="300"
-                  height="300"
-                  style={{ border: 1 }}
-                  allowFullScreen
-                ></iframe>
-                <LocationInfoTable locationInfos={locationInfos} />
-              </div>
+              {locationInfos && (
+                <div className="flex flex-col gap-4">
+                  <p>Last Login Location</p>
+                  <iframe
+                    src={`https://www.google.com/maps?q=${locationInfos[0]?.latitude},${locationInfos[0]?.longitude}&z=15&output=embed`}
+                    width="300"
+                    height="300"
+                    style={{ border: 1 }}
+                    allowFullScreen
+                  ></iframe>
+                  <LocationInfoTable locationInfos={locationInfos} />
+                </div>
+              )}
             </div>
           )}
         </CardContent>

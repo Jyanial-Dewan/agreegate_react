@@ -26,7 +26,6 @@ const LocationInfoTable = ({ locationInfos }: Props) => {
     setSelectedConnection(connection);
   };
 
-  console.log(selectedConnection);
   return (
     <div>
       <Card>

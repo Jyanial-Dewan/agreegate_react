@@ -33,23 +33,23 @@ const MyDevices = () => {
   const [clinets, setClients] = useState<IClientInfo[]>([]);
   const [loading, setLoading] = useState(false);
 
+  console.log(loading);
+
   useEffect(() => {
     const loadClients = async () => {
-      console.log(`${nodeApi.ClientInfo}?user_id=${token?.user_id}`);
       const params = {
         url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}`,
         method: "GET" as method,
-        isLoading: loading,
         setIsLoading: setLoading,
       };
       const res = await fetchData(params);
-      console.log(res);
+
       if (res?.status === 200) {
         setClients(res.data.result);
       }
     };
     loadClients();
-  }, [fetchData, loading, token?.user_id]);
+  }, [token?.user_id]);
   return (
     <div className="p-4">
       <Card className="bg-gray-50">
@@ -60,8 +60,11 @@ const MyDevices = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* <Loader size="40" color="black" /> */}
           {loading ? (
-            <Loader size="40" color="black" />
+            <div className="w-full h-full flex justify-center items-center">
+              <Loader size="40" color="black" />
+            </div>
           ) : (
             <div className="flex flex-col gap-4">
               {clinets.map((cl) => (
@@ -116,15 +119,6 @@ const MyDevices = () => {
                         />
                         <p>{cl.browser_version}</p>
                       </div>
-                      {/* <p
-                        className="text-blue-600 font-semibold cursor-pointer"
-                        onClick={() => {
-                          setShowModal(true);
-                          setSelectedDevice(device);
-                        }}
-                      >
-                        View Singon Audit
-                      </p> */}
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
@@ -134,14 +128,6 @@ const MyDevices = () => {
                     >
                       See Details
                     </p>
-                    {/* <Switch
-                      disabled={device.is_active === 0 && true}
-                      checked={device.is_active === 1 ? true : false}
-                      onCheckedChange={() => {
-                        // setIsActive(true);
-                        switchFunc(device);
-                      }}
-                    /> */}
                   </div>
                 </div>
               ))}

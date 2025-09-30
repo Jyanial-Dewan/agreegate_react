@@ -67,7 +67,6 @@ const Login = () => {
       url: nodeApi.Login,
       method: "POST" as method,
       data: info,
-      isLoading: true,
       setIsLoading,
     };
     const res = await fetchData(params);
@@ -77,14 +76,14 @@ const Login = () => {
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${token?.access_token}`;
-      // console.log(res.data.user_id, deviceInfo);
+
       const clientInfoParams = {
         url: nodeApi.ClientInfo,
         method: "POST" as method,
         data: { user_id: res.data.user_id, ...deviceInfo },
       };
       const clientInfoResponse = await fetchData(clientInfoParams);
-      console.log(clientInfoResponse);
+
       if (
         clientInfoResponse?.status === 201 ||
         clientInfoResponse?.status === 200

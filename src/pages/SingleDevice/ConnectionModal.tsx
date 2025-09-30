@@ -15,7 +15,6 @@ const ConnectionModal = ({
   setShowModal,
   selectedConnection,
 }: Props) => {
-  console.log(showModal);
   return (
     <>
       {showModal && (

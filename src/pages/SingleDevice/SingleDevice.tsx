@@ -1,6 +1,4 @@
 import { useAuthContext } from "@/context/AuthContext/useContext";
-import type { method } from "@/hooks/useAxios";
-import useAxios from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import type {
   IClientInfo,
@@ -12,46 +10,77 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LocationInfoTable from "./LocationInfoTable";
 import Loader from "@/components/common/Loader";
 
+import { loadData, url } from "@/Utility/apiFuntion";
+
 const SingleDevice = () => {
   const { token } = useAuthContext();
   const { device_id } = useParams();
-  const { fetchData } = useAxios("node");
+
   const [info, setInfo] = useState<IClientInfo | null>(null);
   const [locationInfos, setLocationInfos] = useState<IClientLocationInfo[]>([]);
   const [loading, setLoading] = useState(false);
+  // const [loadingLocInfo, setLoadingLocInfo] = useState(false);
 
   console.log(loading);
 
   //Load Device Data
   useEffect(() => {
     const loadClients = async () => {
-      const infoParams = {
-        url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}&device_id=${device_id}`,
-        method: "GET" as method,
-        setIsLoading: setLoading,
+      const locationParams = {
+        baseURL: url,
+        url: `${nodeApi.ClientLocationInfo}?device_id=${device_id}&user_id=${token?.user_id}&page=1&limit=10`,
+        setLoading: setLoading,
       };
-      const res = await fetchData(infoParams);
 
-      if (res?.status === 200) {
-        setInfo(res.data.result);
+      const locationRes = await loadData(locationParams);
+      console.log(locationRes);
+      if (locationRes?.status === 200) {
+        setLocationInfos(locationRes.data.result);
       }
 
-      const locationParams = {
-        url: `${nodeApi.ClientLocationInfo}?device_id=${device_id}&user_id=${token?.user_id}&page=1&limit=10`,
-        method: "GET" as method,
-        setIsLoading: setLoading,
+      const clientParams = {
+        baseURL: url,
+        url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}&device_id=${device_id}`,
+        setLoading: setLoading,
       };
-      const locationRes = await fetchData(locationParams);
 
-      if (locationRes?.status === 200) {
-        setLocationInfos(locationRes?.data.result);
+      const clientRes = await loadData(clientParams);
+      console.log(clientRes);
+      if (clientRes?.status === 200) {
+        setInfo(clientRes.data.result);
       }
     };
+
     loadClients();
-  }, [token?.user_id, device_id, loading]);
+  }, [token?.user_id, device_id]);
+
+  // useEffect(() => {
+  //   const loadClientLocInfo = async () => {
+  //     console.log(loadingLocInfo, "calling locInfo");
+  //     const infoParams = {
+  //       url:
+  //       method: "GET" as method,
+  //       setIsLoading: setLoadingLocInfo,
+  //     };
+  //     console.log(
+  //       `${nodeApi.ClientInfo}?user_id=${token?.user_id}&device_id=${device_id}`
+  //     );
+  //     const res = await fetchData(infoParams);
+  //     console.log(res);
+  //     if (res?.status === 200) {
+  //       setInfo(res.data.result);
+  //     }
+  //   };
+
+  //   loadClientLocInfo();
+  // }, [device_id, loadingLocInfo, token?.user_id]);
 
   return (
     <div className="p-4">
+      {/* <div>
+        <BackButton />
+      </div> */}
+      {/* <BackButton /> */}
       <Card className="max-h-[80vh] overflow-auto ">
         <CardHeader>
           <CardTitle>Client Info</CardTitle>

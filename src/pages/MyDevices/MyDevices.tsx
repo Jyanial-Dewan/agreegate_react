@@ -6,8 +6,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAuthContext } from "@/context/AuthContext/useContext";
-import type { method } from "@/hooks/useAxios";
-import useAxios from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import type { IClientInfo } from "@/types/deviceInfo.interface";
 import { useEffect, useState } from "react";
@@ -24,10 +22,10 @@ import Opera from "/icons/device/opera.png";
 import Undefined from "/icons/undefined.svg";
 import Loader from "@/components/common/Loader";
 import { useNavigate } from "react-router";
+import { loadData, nodeURL } from "@/Utility/apiFuntion";
 
 const MyDevices = () => {
   const { token } = useAuthContext();
-  const { fetchData } = useAxios("node");
   const navigate = useNavigate();
 
   const [clinets, setClients] = useState<IClientInfo[]>([]);
@@ -38,11 +36,11 @@ const MyDevices = () => {
   useEffect(() => {
     const loadClients = async () => {
       const params = {
+        baseURL: nodeURL,
         url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}`,
-        method: "GET" as method,
-        setIsLoading: setLoading,
+        setLoading: setLoading,
       };
-      const res = await fetchData(params);
+      const res = await loadData(params);
 
       if (res?.status === 200) {
         setClients(res.data.result);

@@ -15,14 +15,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { nodeApi } from "@/services/api";
-import type { method } from "@/hooks/useAxios";
-import useAxios from "@/hooks/useAxios";
 import Loader from "@/components/common/Loader";
 import axios from "axios";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 import ClientImage from "/images/client.svg";
+import { nodeURL, postData } from "@/Utility/apiFuntion";
 
 const formSchema = z.object({
   email: z.string().min(2, "Too Short"),
@@ -34,7 +33,6 @@ const Login = () => {
 
   const { deviceInfo, setDeviceInfo } = useGlobalContext();
 
-  const { fetchData, error } = useAxios("node");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,12 +56,12 @@ const Login = () => {
       password: values.password,
     };
     const params = {
+      baseURL: nodeURL,
       url: nodeApi.Login,
-      method: "POST" as method,
-      data: info,
-      setIsLoading,
+      setLoading: setIsLoading,
+      payload: info,
     };
-    const res = await fetchData(params);
+    const res = await postData(params);
 
     if (res?.status === 200) {
       setToken(res.data);
@@ -72,11 +70,12 @@ const Login = () => {
       ] = `Bearer ${token?.access_token}`;
 
       const clientInfoParams = {
+        baseURL: nodeURL,
         url: nodeApi.ClientInfo,
-        method: "POST" as method,
-        data: { user_id: res.data.user_id, ...deviceInfo },
+        setLoading: setIsLoading,
+        payload: { user_id: res.data.user_id, ...deviceInfo },
       };
-      const clientInfoResponse = await fetchData(clientInfoParams);
+      const clientInfoResponse = await postData(clientInfoParams);
 
       if (
         clientInfoResponse?.status === 201 ||
@@ -172,12 +171,16 @@ const Login = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full cursor-pointer">
+            <Button
+              type="submit"
+              className="w-full cursor-pointer"
+              disabled={isLoading}
+            >
               {isLoading ? <Loader color="white" /> : "Login"}
             </Button>
           </form>
         </Form>
-        <span className="text-red-600">{error}</span>
+        {/* <span className="text-red-600">{error}</span> */}
         <p>
           Don't have an account?{" "}
           <Link

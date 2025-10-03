@@ -9,9 +9,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink, useNavigate } from "react-router";
 import { Laptop, LogOut, User } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
-import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
+import { nodeURL, postData } from "@/Utility/apiFuntion";
 // import axios from "axios";
 
 const HeaderDropdown = () => {
@@ -20,14 +20,15 @@ const HeaderDropdown = () => {
   const { user, handleSocketDisconnect } = useGlobalContext();
 
   const navigate = useNavigate();
-  const { fetchData } = useAxios("node");
+
   const params = {
+    baseURL: nodeURL,
     url: nodeApi.Logout,
-    method: "POST" as method,
-    data: {},
+    // setLoading?: Dispatch<SetStateAction<boolean>>;
+    payload: {},
   };
   const logOut = async () => {
-    const res = await fetchData(params);
+    const res = await postData(params);
     if (res?.status === 200) {
       setToken(null);
       localStorage.removeItem("ClientInfo");

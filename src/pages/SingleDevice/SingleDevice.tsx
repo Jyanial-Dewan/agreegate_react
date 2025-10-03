@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LocationInfoTable from "./LocationInfoTable";
 import Loader from "@/components/common/Loader";
 
-import { loadData, url } from "@/Utility/apiFuntion";
+import { loadData, nodeURL } from "@/Utility/apiFuntion";
 
 const SingleDevice = () => {
   const { token } = useAuthContext();
@@ -27,7 +27,7 @@ const SingleDevice = () => {
   useEffect(() => {
     const loadClients = async () => {
       const locationParams = {
-        baseURL: url,
+        baseURL: nodeURL,
         url: `${nodeApi.ClientLocationInfo}?device_id=${device_id}&user_id=${token?.user_id}&page=1&limit=10`,
         setLoading: setLoading,
       };
@@ -39,7 +39,7 @@ const SingleDevice = () => {
       }
 
       const clientParams = {
-        baseURL: url,
+        baseURL: nodeURL,
         url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}&device_id=${device_id}`,
         setLoading: setLoading,
       };
@@ -54,27 +54,6 @@ const SingleDevice = () => {
     loadClients();
   }, [token?.user_id, device_id]);
 
-  // useEffect(() => {
-  //   const loadClientLocInfo = async () => {
-  //     console.log(loadingLocInfo, "calling locInfo");
-  //     const infoParams = {
-  //       url:
-  //       method: "GET" as method,
-  //       setIsLoading: setLoadingLocInfo,
-  //     };
-  //     console.log(
-  //       `${nodeApi.ClientInfo}?user_id=${token?.user_id}&device_id=${device_id}`
-  //     );
-  //     const res = await fetchData(infoParams);
-  //     console.log(res);
-  //     if (res?.status === 200) {
-  //       setInfo(res.data.result);
-  //     }
-  //   };
-
-  //   loadClientLocInfo();
-  // }, [device_id, loadingLocInfo, token?.user_id]);
-
   return (
     <div className="p-4">
       {/* <div>
@@ -86,9 +65,10 @@ const SingleDevice = () => {
           <CardTitle>Client Info</CardTitle>
         </CardHeader>
         <CardContent>
-          {/* <Loader size="40" /> */}
           {loading ? (
-            <Loader size="40" />
+            <div className="w-full h-full flex justify-center items-center">
+              <Loader size="40" color="black" />
+            </div>
           ) : (
             <div className="flex gap-8 justify-between">
               <div className="max-w-[50%]">

@@ -12,12 +12,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import Loader from "@/components/common/Loader";
 import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import RegisterImage from "/images/register.svg";
+import { nodeURL, postData } from "@/Utility/apiFuntion";
 
 const formSchema = z
   .object({
@@ -35,7 +35,6 @@ const formSchema = z
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const { fetchData } = useAxios("node");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -63,14 +62,15 @@ const SignUp = () => {
       password: values.password,
     };
     const params = {
+      baseURL: nodeURL,
       url: nodeApi.User + "/register",
-      method: "POST" as method,
-      data: info,
-      setIsLoading,
+      setLoading: setIsLoading,
+      payload: info,
       isToast: true,
+      isConsole: true,
     };
-    const res = await fetchData(params);
-    if (res?.data) {
+    const res = await postData(params);
+    if (res?.status === 201) {
       navigate("/login");
     }
     form.reset();
@@ -219,7 +219,11 @@ const SignUp = () => {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full cursor-pointer"
+              disabled={isLoading}
+            >
               {isLoading ? <Loader color="white" /> : "Register"}
             </Button>
           </form>

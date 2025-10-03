@@ -11,39 +11,41 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import useAxios, { type method } from "@/hooks/useAxios";
+// import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import Loader from "@/components/common/Loader";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import type { IUser } from "@/types/user.interface";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+// import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
+import { nodeURL, putData } from "@/Utility/apiFuntion";
+import type { method } from "@/hooks/useAxios";
+import useAxios from "@/hooks/useAxios";
 
-const formSchema = z
-  .object({
-    username: z.string().min(2, "Too short").max(50, "Too long"),
-    firstname: z.string().min(2, "Too short"),
-    lastname: z.string().min(2, "Too short"),
-    email: z.email("Type valid email"),
-    password: z.string().min(8, "Too short"),
-    confirm: z.string().min(8, "Too short"),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: "Passwords do not match",
-    path: ["confirm"],
-  });
+const formSchema = z.object({
+  username: z.string().min(2, "Too short").max(50, "Too long"),
+  firstname: z.string().min(2, "Too short"),
+  lastname: z.string().min(2, "Too short"),
+  email: z.email("Type valid email"),
+  // password: z.string().min(8, "Too short"),
+  // confirm: z.string().min(8, "Too short"),
+});
+// .refine((data) => data.password === data.confirm, {
+//   message: "Passwords do not match",
+//   path: ["confirm"],
+// });
 
 const UpdateProfile = () => {
   const { token } = useAuthContext();
   const { user, setUser } = useGlobalContext();
   const { fetchData } = useAxios<IUser>("node");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
+  // const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [preview, setPreview] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
@@ -53,8 +55,8 @@ const UpdateProfile = () => {
       firstname: "",
       lastname: "",
       email: "",
-      password: "",
-      confirm: "",
+      // password: "",
+      // confirm: "",
     },
   });
 
@@ -65,8 +67,8 @@ const UpdateProfile = () => {
         firstname: user?.first_name,
         lastname: user?.last_name,
         email: user?.email_addresses[0] ?? "",
-        password: "",
-        confirm: "",
+        // password: "",
+        // confirm: "",
       });
     }
   }, [user, form]);
@@ -79,16 +81,18 @@ const UpdateProfile = () => {
       email_address: values.email,
       first_name: values.firstname,
       last_name: values.lastname,
-      password: values.password,
+      // password: values.password,
     };
-    const params = {
+    const putParams = {
+      baseURL: nodeURL,
       url: nodeApi.User + "/" + token?.user_id,
-      method: "PUT" as method,
-      data: info,
-      setIsLoading,
+      setLoading: setIsUpdating,
+      payload: info,
+      // isConsole?: boolean;
       isToast: true,
+      // accessToken?: string;
     };
-    const res = await fetchData(params);
+    const res = await putData(putParams);
 
     if (res?.status === 200) {
       form.reset({
@@ -96,26 +100,26 @@ const UpdateProfile = () => {
         firstname: res.data.user.first_name,
         lastname: res.data.user.last_name,
         email: res.data.user.email_addresses[0] ?? "",
-        password: "",
-        confirm: "",
+        // password: "",
+        // confirm: "",
       });
     }
   };
 
-  const handleShowPassword = () => {
-    if (showPassword) {
-      setShowPassword(false);
-    } else {
-      setShowPassword(true);
-    }
-  };
-  const handleShowConfirmPassword = () => {
-    if (showConfirmPassword) {
-      setShowConfirmPassword(false);
-    } else {
-      setShowConfirmPassword(true);
-    }
-  };
+  // const handleShowPassword = () => {
+  //   if (showPassword) {
+  //     setShowPassword(false);
+  //   } else {
+  //     setShowPassword(true);
+  //   }
+  // };
+  // const handleShowConfirmPassword = () => {
+  //   if (showConfirmPassword) {
+  //     setShowConfirmPassword(false);
+  //   } else {
+  //     setShowConfirmPassword(true);
+  //   }
+  // };
 
   const handleChangePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -135,7 +139,7 @@ const UpdateProfile = () => {
       url: `${nodeApi.User}/update_profile_image/${token?.user_id}`,
       method: "PUT" as method,
       data: formData,
-      setIsLoading: setLoading,
+      setIsLoading: setUploading,
       isToast: true,
     };
 
@@ -196,11 +200,11 @@ const UpdateProfile = () => {
             </label>
 
             <Button
-              disabled={file === null || loading}
+              disabled={file === null || uploading}
               onClick={handleUploadPhoto}
               className="cursor-pointer my-3"
             >
-              {loading ? <Loader /> : "Upload"}
+              {uploading ? <Loader color="white" /> : "Upload"}
             </Button>
           </div>
         </div>
@@ -268,7 +272,7 @@ const UpdateProfile = () => {
                     </FormItem>
                   )}
                 />
-                <div className="flex gap-3">
+                {/* <div className="flex gap-3">
                   <FormField
                     control={form.control}
                     name="password"
@@ -329,10 +333,14 @@ const UpdateProfile = () => {
                       </FormItem>
                     )}
                   />
-                </div>
+                </div> */}
               </div>
-              <Button type="submit" className="w-full cursor-pointer">
-                {isLoading ? <Loader /> : "Update"}
+              <Button
+                type="submit"
+                className="w-full cursor-pointer"
+                disabled={isUpdating}
+              >
+                {isUpdating ? <Loader color="white" /> : "Update"}
               </Button>
             </form>
           </Form>

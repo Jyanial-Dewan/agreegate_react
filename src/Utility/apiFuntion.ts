@@ -8,14 +8,14 @@ import axios from "axios";
 interface loadDataParams {
   baseURL: string;
   url: string;
-  setLoading: Dispatch<SetStateAction<boolean>>;
+  setLoading?: Dispatch<SetStateAction<boolean>>;
   accessToken?: string;
 }
 
 interface postDataParams {
   baseURL: string;
   url: string;
-  setLoading: Dispatch<SetStateAction<boolean>>;
+  setLoading?: Dispatch<SetStateAction<boolean>>;
   payload: any;
   isConsole?: boolean;
   isToast?: boolean;
@@ -40,10 +40,10 @@ interface deleteDataParams {
   isToast?: boolean;
 }
 
-export const url = import.meta.env.VITE_NODE_ENDPOINT_URL;
+export const nodeURL = import.meta.env.VITE_NODE_ENDPOINT_URL;
 
 export const api = axios.create({
-  baseURL: url,
+  baseURL: nodeURL,
   headers: { "Content-Type": "application/json" },
 
   withCredentials: true,
@@ -51,7 +51,9 @@ export const api = axios.create({
 
 export async function loadData(params: loadDataParams) {
   try {
-    params.setLoading(true);
+    if (params.setLoading) {
+      params.setLoading(true);
+    }
     const res = await api.get(`${params.url}`, {
       baseURL: params.baseURL,
       headers: {
@@ -67,13 +69,17 @@ export async function loadData(params: loadDataParams) {
     }
     return undefined;
   } finally {
-    params.setLoading(false);
+    if (params.setLoading) {
+      params.setLoading(false);
+    }
   }
 }
 
 export async function postData(params: postDataParams) {
   try {
-    params.setLoading(true);
+    if (params.setLoading) {
+      params.setLoading(true);
+    }
     const res = await api.post(`${params.url}`, params.payload, {
       baseURL: params.baseURL,
       headers: {
@@ -94,7 +100,9 @@ export async function postData(params: postDataParams) {
       return error.message;
     }
   } finally {
-    params.setLoading(false);
+    if (params.setLoading) {
+      params.setLoading(false);
+    }
   }
 }
 

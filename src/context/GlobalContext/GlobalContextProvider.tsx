@@ -1,5 +1,3 @@
-import type { method } from "@/hooks/useAxios";
-import useAxios from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import type { IUser } from "@/types/user.interface";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -12,6 +10,7 @@ import type {
 
 import * as UAParser from "ua-parser-js";
 import { io } from "socket.io-client";
+import { loadData, nodeURL } from "@/Utility/apiFuntion";
 
 interface GlobalContextProviderProp {
   children: ReactNode;
@@ -39,31 +38,30 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
       transports: ["websocket"],
     });
   }, [socket_url, token?.user_id, deviceInfo?.device_id]);
-  const { fetchData } = useAxios("node");
 
   useEffect(() => {
     if (!token || token.isLoggedIn === false) return;
 
     const loadUser = async () => {
       const params = {
+        baseURL: nodeURL,
         url: `${nodeApi.User}?user_id=${token.user_id}`,
-        method: "GET" as method,
       };
-      const res = await fetchData(params);
+      const res = await loadData(params);
       if (res?.status === 200) {
         setUser(res.data.result);
       }
     };
     loadUser();
-  }, [fetchData, token]);
+  }, [token]);
 
   useEffect(() => {
     const fetchIP = async () => {
       const params = {
+        baseURL: nodeURL,
         url: nodeApi.IPAdress,
-        method: "GET" as method,
       };
-      const res = await fetchData(params);
+      const res = await loadData(params);
 
       if (res?.status === 200) {
         const result = res.data;
@@ -83,7 +81,7 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
       }
     };
     fetchIP();
-  }, [fetchData]);
+  }, []);
 
   useEffect(() => {
     const parser = new UAParser.UAParser();
@@ -104,14 +102,14 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
     }
   }, []);
 
-  useEffect(() => {
-    fetch("https://ipapi.co/json/")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("IP Info:", data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  // useEffect(() => {
+  //   fetch("https://ipapi.co/json/")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log("IP Info:", data);
+  //     })
+  //     .catch((err) => console.error(err));
+  // }, []);
 
   useEffect(() => {
     const storedValue = localStorage.getItem("ClientInfo");
@@ -145,7 +143,6 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
         setDeviceInfo,
         handleEmitClientLocation,
         handleSocketDisconnect,
-
       }}
     >
       {children}

@@ -1,11 +1,4 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import { useForm } from "react-hook-form";
@@ -22,13 +15,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { nodeApi } from "@/services/api";
-import type { method } from "@/hooks/useAxios";
-import useAxios from "@/hooks/useAxios";
 import Loader from "@/components/common/Loader";
 import axios from "axios";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
+import ClientImage from "/images/client.svg";
+import { nodeURL, postData } from "@/Utility/apiFuntion";
 
 const formSchema = z.object({
   email: z.string().min(2, "Too Short"),
@@ -40,7 +33,6 @@ const Login = () => {
 
   const { deviceInfo, setDeviceInfo } = useGlobalContext();
 
-  const { fetchData, error } = useAxios("node");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -64,27 +56,27 @@ const Login = () => {
       password: values.password,
     };
     const params = {
+      baseURL: nodeURL,
       url: nodeApi.Login,
-      method: "POST" as method,
-      data: info,
-      isLoading: true,
-      setIsLoading,
+      setLoading: setIsLoading,
+      payload: info,
     };
-    const res = await fetchData(params);
+    const res = await postData(params);
 
     if (res?.status === 200) {
       setToken(res.data);
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${token?.access_token}`;
-      // console.log(res.data.user_id, deviceInfo);
+
       const clientInfoParams = {
+        baseURL: nodeURL,
         url: nodeApi.ClientInfo,
-        method: "POST" as method,
-        data: { userId: res.data.user_id, ...deviceInfo },
+        setLoading: setIsLoading,
+        payload: { user_id: res.data.user_id, ...deviceInfo },
       };
-      const clientInfoResponse = await fetchData(clientInfoParams);
-      console.log(clientInfoResponse);
+      const clientInfoResponse = await postData(clientInfoParams);
+
       if (
         clientInfoResponse?.status === 201 ||
         clientInfoResponse?.status === 200
@@ -115,80 +107,101 @@ const Login = () => {
   // }
 
   return (
-    <div className="w-[100vw] h-[100vh] flex justify-center items-center">
-      <Card className="w-full max-w-sm mx-auto">
+    <div className="w-[100vw] h-[100vh] flex justify-center items-center p-4">
+      <div className="w-[50%] h-full">
+        <img src={ClientImage} className="w-full h-full" />
+      </div>
+
+      <div className="flex flex-col gap-4 w-[50%] h-full justify-center items-center">
+        <div className="flex flex-col justify-center items-center">
+          <h3 className="font-bold text-lg"> Login</h3>
+          <p className="text-xs text-gray-600">
+            Welcome back! Please enter your details
+          </p>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username or Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="username or email"
+                      {...field}
+                      className="w-[300px]"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={handleShowPassword}
+                        className="absolute right-4 top-2 cursor-pointer"
+                      >
+                        {showPassword ? (
+                          <EyeOffIcon size={20} color="#6b7280" />
+                        ) : (
+                          <EyeIcon size={20} color="#6b7280" />
+                        )}
+                      </button>
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="*********"
+                        {...field}
+                        className="w-[300px]"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              className="w-full cursor-pointer"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader color="white" /> : "Login"}
+            </Button>
+          </form>
+        </Form>
+        {/* <span className="text-red-600">{error}</span> */}
+        <p>
+          Don't have an account?{" "}
+          <Link
+            to={"/signup"}
+            className="text-blue-600 font-bold hover:cursor-pointer underline-offset-4 hover:underline"
+          >
+            Create one here
+          </Link>
+        </p>
+      </div>
+      {/* <Card className="w-full max-w-sm mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Login</CardTitle>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username or Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="username or email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <button
-                          type="button"
-                          onClick={handleShowPassword}
-                          className="absolute right-4 top-2 cursor-pointer"
-                        >
-                          {showPassword ? (
-                            <EyeOffIcon size={20} color="#6b7280" />
-                          ) : (
-                            <EyeIcon size={20} color="#6b7280" />
-                          )}
-                        </button>
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="*********"
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full cursor-pointer">
-                {isLoading ? <Loader /> : "Login"}
-              </Button>
-            </form>
-          </Form>
-          <span className="text-red-600">{error}</span>
+          
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <p>
-            Don't have an account?{" "}
-            <Link
-              to={"/signup"}
-              className="text-blue-600 hover:text-blue-800 hover:cursor-pointer underline-offset-4 hover:underline"
-            >
-              Register
-            </Link>
-          </p>
+         
         </CardFooter>
-      </Card>
+      </Card> */}
     </div>
   );
 };

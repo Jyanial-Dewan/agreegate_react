@@ -7,27 +7,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink, useNavigate } from "react-router";
-import { LockKeyholeOpen, LogOut, User } from "lucide-react";
+import { LockKeyholeOpen, Laptop, LogOut, User } from "lucide-react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
-import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
+import { nodeURL, postData } from "@/Utility/apiFuntion";
 // import axios from "axios";
 
-const Dropdown = () => {
-  const { setToken, token } = useAuthContext();
+const HeaderDropdown = () => {
+  const { setToken } = useAuthContext();
 
   const { user, handleSocketDisconnect } = useGlobalContext();
 
   const navigate = useNavigate();
-  const { fetchData } = useAxios("node");
+
   const params = {
+    baseURL: nodeURL,
     url: nodeApi.Logout,
-    method: "POST" as method,
-    data: {},
+    // setLoading?: Dispatch<SetStateAction<boolean>>;
+    payload: {},
   };
   const logOut = async () => {
-    const res = await fetchData(params);
+    const res = await postData(params);
     if (res?.status === 200) {
       setToken(null);
       localStorage.removeItem("ClientInfo");
@@ -44,7 +45,7 @@ const Dropdown = () => {
             className="object-cover object-center"
             src={`http://localhost:3000/api/${user?.profile_picture.original}`}
           />
-          <AvatarFallback>{token?.user_name.slice(0, 1)}</AvatarFallback>
+          <AvatarFallback>{user?.first_name.slice(0, 1)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 mr-1">
@@ -56,8 +57,8 @@ const Dropdown = () => {
             to="/update-profile"
             className={({ isActive }) =>
               isActive
-                ? "flex gap-2 items-center w-full text-blue-500"
-                : "flex gap-2 items-center w-full"
+                ? "flex gap-2 items-center w-full hover:scale-90 duration-300 py-1 text-blue-500"
+                : "flex gap-2 items-center w-full hover:scale-90 duration-300 py-1"
             }
           >
             <User size={18} />
@@ -78,12 +79,23 @@ const Dropdown = () => {
               Change Password
             </p>
           </NavLink>
+          <NavLink
+            to="/my-devices"
+            className={({ isActive }) =>
+              isActive
+                ? "flex gap-2 items-center w-full hover:scale-90 duration-300 py-1 text-blue-500"
+                : "flex gap-2 items-center w-full hover:scale-90 duration-300 py-1"
+            }
+          >
+            <Laptop size={18} />
+            <p className="font-semibold font-workSans text-md">My Devices</p>
+          </NavLink>
         </div>
         <DropdownMenuSeparator />
         <div className="p-2 rounded hover:bg-hover text-sm ">
           <button
             onClick={logOut}
-            className="flex gap-2 items-center w-full text-red-600 cursor-pointer"
+            className="flex gap-2 items-center w-full hover:scale-90 duration-300 text-red-600 cursor-pointer"
           >
             <LogOut size={18} />
             <p className="font-semibold font-workSans text-md">Logout</p>
@@ -94,4 +106,4 @@ const Dropdown = () => {
   );
 };
 
-export default Dropdown;
+export default HeaderDropdown;

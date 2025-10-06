@@ -1,5 +1,3 @@
-import type { method } from "@/hooks/useAxios";
-import useAxios from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import type { IUser } from "@/types/user.interface";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -12,6 +10,7 @@ import type {
 
 import * as UAParser from "ua-parser-js";
 import { io } from "socket.io-client";
+import { loadData, nodeURL } from "@/Utility/apiFuntion";
 
 interface GlobalContextProviderProp {
   children: ReactNode;
@@ -21,6 +20,7 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [deviceInfo, setDeviceInfo] = useState<IClientInfo | null>(null);
   const [deviceLocation, setDeviceLocation] = useState<IClientLocationInfo>({
+    connection_id: "",
     latitude: 0,
     longitude: 0,
   });
@@ -38,51 +38,50 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
       transports: ["websocket"],
     });
   }, [socket_url, token?.user_id, deviceInfo?.device_id]);
-  const { fetchData } = useAxios("node");
 
   useEffect(() => {
     if (!token || token.isLoggedIn === false) return;
 
     const loadUser = async () => {
       const params = {
-        url: `${nodeApi.User}/${token?.user_id}`,
-        method: "GET" as method,
+        baseURL: nodeURL,
+        url: `${nodeApi.User}?user_id=${token.user_id}`,
       };
-      const res = await fetchData(params);
+      const res = await loadData(params);
       if (res?.status === 200) {
         setUser(res.data.result);
       }
     };
     loadUser();
-  }, [token, fetchData]);
+  }, [token]);
 
   useEffect(() => {
     const fetchIP = async () => {
       const params = {
+        baseURL: nodeURL,
         url: nodeApi.IPAdress,
-        method: "GET" as method,
       };
-      const res = await fetchData(params);
+      const res = await loadData(params);
 
       if (res?.status === 200) {
         const result = res.data;
         setDeviceInfo((prev) => ({
           ...prev,
           country: result.country,
-          countryCode: result.countryCode,
+          country_code: result.countryCode,
           region: result.region,
-          regionName: result.regionName,
+          region_name: result.regionName,
           city: result.city,
           zip: result.zip,
           timezone: result.timezone,
-          ipOrg: result.org,
-          ipAddress: result.query,
-          autonomusSystem: result.as,
+          ip_org: result.org,
+          ip_address: result.query,
+          autonomus_system: result.as,
         }));
       }
     };
     fetchIP();
-  }, [fetchData]);
+  }, []);
 
   useEffect(() => {
     const parser = new UAParser.UAParser();
@@ -90,27 +89,27 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
     if (result) {
       setDeviceInfo((prev) => ({
         ...prev,
-        browserName: result.browser.name,
-        browserVersion: result.browser.version,
-        browserType: result.browser.type,
-        cpuArchitecture: result.cpu.architecture,
-        engineName: result.engine.name,
-        engineVersion: result.engine.version,
-        osName: result.os.name,
-        osVersion: result.os.version,
-        userAgent: result.ua,
+        browser_name: result.browser.name,
+        browser_version: result.browser.version,
+        browser_type: result.browser.type,
+        cpu_architecture: result.cpu.architecture,
+        engine_name: result.engine.name,
+        engine_version: result.engine.version,
+        os_name: result.os.name,
+        os_version: result.os.version,
+        user_agent: result.ua,
       }));
     }
   }, []);
 
-  useEffect(() => {
-    fetch("https://ipapi.co/json/")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("IP Info:", data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  // useEffect(() => {
+  //   fetch("https://ipapi.co/json/")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log("IP Info:", data);
+  //     })
+  //     .catch((err) => console.error(err));
+  // }, []);
 
   useEffect(() => {
     const storedValue = localStorage.getItem("ClientInfo");
@@ -144,7 +143,6 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
         setDeviceInfo,
         handleEmitClientLocation,
         handleSocketDisconnect,
-
       }}
     >
       {children}

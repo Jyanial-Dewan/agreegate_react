@@ -1,9 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext, type IToken } from "./auth-context";
-// import Loader from "@/components/common/Loader";
 import { nodeApi } from "@/services/api";
-import type { method } from "@/hooks/useAxios";
-import useAxios from "@/hooks/useAxios";
+import { loadData, nodeURL } from "@/Utility/apiFuntion";
 
 interface AuthContextProviderProp {
   children: ReactNode;
@@ -13,16 +11,14 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
   const [token, setToken] = useState<IToken | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const { fetchData } = useAxios("node");
-
   useEffect(() => {
     const getUser = async () => {
       const params = {
+        baseURL: nodeURL,
         url: nodeApi.VerifyUser,
-        method: "GET" as method,
-        setIsLoading: setLoading,
+        setLoading: setLoading,
       };
-      const res = await fetchData(params);
+      const res = await loadData(params);
       if (res?.status === 200) {
         setToken(res.data);
         setLoading(false);
@@ -34,14 +30,7 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
     }, 300);
 
     return () => clearTimeout(delay);
-  }, [fetchData]);
-
-  // if (loading)
-  //   return (
-  //     <div className="flex justify-center items-center h-[100vh]">
-  //       <Loader size="40" color="black" />
-  //     </div>
-  //   );
+  }, []);
 
   return (
     <AuthContext.Provider value={{ token, setToken, loading }}>

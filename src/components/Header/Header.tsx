@@ -1,7 +1,7 @@
 // import logo from "@/Image/logo-2.png";
 // import { NavLink } from "react-router";
 import { Link } from "react-router";
-import Dropdown from "../Dropdown/Dropdown";
+import HeaderDropdown from "./HeaderDropdow";
 
 const Header = () => {
   return (
@@ -42,7 +42,7 @@ const Header = () => {
         {/* <Dropdown /> */}
       </div>
 
-      <Dropdown />
+      <HeaderDropdown />
     </div>
   );
 };

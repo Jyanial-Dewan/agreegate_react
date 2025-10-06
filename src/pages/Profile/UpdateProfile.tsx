@@ -1,3 +1,6 @@
+import type { E164Number } from "libphonenumber-js/core";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +31,7 @@ const formSchema = z.object({
   firstname: z.string().min(2, "Too short"),
   lastname: z.string().min(2, "Too short"),
   email: z.email("Type valid email"),
+  phone_number: z.string().min(11, "Please enter at least 11 digits"),
   // password: z.string().min(8, "Too short"),
   // confirm: z.string().min(8, "Too short"),
 });
@@ -67,7 +71,7 @@ const UpdateProfile = () => {
         firstname: user?.first_name,
         lastname: user?.last_name,
         email: user?.email_address,
-        // password: "",
+        phone_number: user?.phone_number,
         // confirm: "",
       });
     }
@@ -81,27 +85,24 @@ const UpdateProfile = () => {
       email_address: values.email,
       first_name: values.firstname,
       last_name: values.lastname,
-      // password: values.password,
+      phone_number: values.phone_number,
     };
+
     const putParams = {
       baseURL: nodeURL,
       url: nodeApi.User + "/" + token?.user_id,
       setLoading: setIsUpdating,
       payload: info,
-      // isConsole?: boolean;
       isToast: true,
-      // accessToken?: string;
     };
     const res = await putData(putParams);
-
     if (res?.status === 200) {
       form.reset({
-        username: res.data.user.user_name,
-        firstname: res.data.user.first_name,
-        lastname: res.data.user.last_name,
-        email: res.data.user.email_addresses[0] ?? "",
-        // password: "",
-        // confirm: "",
+        username: res.data.result.user_name,
+        firstname: res.data.result.first_name,
+        lastname: res.data.result.last_name,
+        email: res.data.result.email_address,
+        phone_number: res.data.result.phone_number,
       });
     }
   };
@@ -267,6 +268,28 @@ const UpdateProfile = () => {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input type="email" placeholder="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone_number"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone number</FormLabel>
+                      <FormControl>
+                        <PhoneInput
+                          international
+                          defaultCountry="BD"
+                          placeholder="Enter phone number"
+                          {...field}
+                          value={field.value as E164Number}
+                          onChange={(value) => field.onChange(value)}
+                          className="w-full border rounded-md p-2 focus:outline-none"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

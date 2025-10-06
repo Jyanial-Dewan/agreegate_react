@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUser = async () => {
+    const verifyUser = async () => {
       const params = {
         baseURL: nodeURL,
         url: nodeApi.VerifyUser,
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: AuthContextProviderProp) => {
       setLoading(false);
     };
     const delay = setTimeout(() => {
-      getUser();
+      verifyUser();
     }, 300);
 
     return () => clearTimeout(delay);

@@ -10,6 +10,7 @@ interface loadDataParams {
   url: string;
   setLoading?: Dispatch<SetStateAction<boolean>>;
   accessToken?: string;
+  isToast?: boolean;
 }
 
 interface postDataParams {
@@ -65,7 +66,9 @@ export async function loadData(params: loadDataParams) {
     }
   } catch (error) {
     if (error instanceof Error) {
-      toast(error.message);
+      if (params.isToast) {
+        toast(error.message);
+      }
     }
     return undefined;
   } finally {

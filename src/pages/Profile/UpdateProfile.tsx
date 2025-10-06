@@ -66,7 +66,7 @@ const UpdateProfile = () => {
         username: user?.user_name,
         firstname: user?.first_name,
         lastname: user?.last_name,
-        email: user?.email_addresses[0] ?? "",
+        email: user?.email_address,
         // password: "",
         // confirm: "",
       });
@@ -165,7 +165,7 @@ const UpdateProfile = () => {
 
   return (
     <div className="flex gap-3 justify-center">
-      <div className="w-96 flex flex-col border shadow-md">
+      <div className="w-96 flex flex-col border shadow-md ">
         {/* Header */}
         <div className="flex mb-2 items-center h-12 bg-gray-200 border-b border-gray-500">
           <h3 className="px-5 font-bold text-xl">Profile Photo</h3>

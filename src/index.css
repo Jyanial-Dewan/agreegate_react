@@ -4,8 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-primary: #1C3BA4;
-  --color-secondary: #D1E5FF;
+  --color-client-primary: #1C3BA4;
+  --color-client-secondary: #D1E5FF;
   --color-GREEN-100: #F0FDF4;
   --color-GREEN-200: #D9FFDD;
   --color-GREEN-300: #04C21B;

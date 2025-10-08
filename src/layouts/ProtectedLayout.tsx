@@ -1,11 +1,13 @@
 import Header from "@/components/Header/Header";
+import Sidebar from "@/components/sidebar/Sidebar";
 import { Outlet } from "react-router";
 
 export const ProtectedLayout = () => {
   return (
-    <div>
+    <div className="relative">
       <Header />
-      <div className="pt-[4rem]">
+      <Sidebar />
+      <div className="pt-[4rem] ml-72">
         <Outlet />
       </div>
     </div>

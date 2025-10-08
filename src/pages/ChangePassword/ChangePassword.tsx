@@ -11,13 +11,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import Loader from "@/components/common/Loader";
 import { useState } from "react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
-import type { IUser } from "@/types/user.interface";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { nodeURL, postData } from "@/Utility/apiFuntion";
 
 const formSchema = z
   .object({
@@ -31,7 +30,6 @@ const formSchema = z
   });
 const ChangePassword = () => {
   const { token } = useAuthContext();
-  const { fetchData } = useAxios<IUser>("node");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -54,15 +52,24 @@ const ChangePassword = () => {
       new_password: values.new_password,
     };
 
-    const params = {
+    const putParams = {
+      baseURL: nodeURL,
       url: `${nodeApi.User}/change_password/${token?.user_id}`,
-      method: "POST" as method,
-      data: info,
-      isLoading: true,
-      setIsLoading,
+      setLoading: setIsLoading,
+      payload: info,
       isToast: true,
     };
-    const res = await fetchData(params);
+    const res = await postData(putParams);
+
+    // const params = {
+    //   url: `${nodeApi.User}/change_password/${token?.user_id}`,
+    //   method: "POST" as method,
+    //   data: info,
+    //   isLoading: true,
+    //   setIsLoading,
+    //   isToast: true,
+    // };
+    // const res = await fetchData(params);
 
     if (res?.status === 200) {
       form.reset();

@@ -1,3 +1,6 @@
+import type { E164Number } from "libphonenumber-js/core";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router";
@@ -25,6 +28,7 @@ const formSchema = z
     firstname: z.string().min(2, "Too short"),
     lastname: z.string().min(2, "Too short"),
     email: z.email("Type valid email"),
+    phone_number: z.string().min(11, "Please enter at least 11 digits"),
     password: z.string().min(8, "Too short"),
     confirm: z.string().min(8, "Too short"),
   })
@@ -46,6 +50,7 @@ const SignUp = () => {
       firstname: "",
       lastname: "",
       email: "",
+      phone_number: "",
       password: "",
       confirm: "",
     },
@@ -60,6 +65,7 @@ const SignUp = () => {
       first_name: values.firstname,
       last_name: values.lastname,
       password: values.password,
+      phone_number: values.phone_number,
     };
     const params = {
       baseURL: nodeURL,
@@ -151,6 +157,27 @@ const SignUp = () => {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input type="email" placeholder="email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone number</FormLabel>
+                    <FormControl>
+                      <PhoneInput
+                        international
+                        defaultCountry="BD"
+                        placeholder="Enter phone number"
+                        {...field}
+                        value={field.value as E164Number | undefined}
+                        onChange={(value) => field.onChange(value)}
+                        className="w-full border rounded-md p-2 focus:outline-none"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

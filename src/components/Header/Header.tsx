@@ -5,7 +5,7 @@ import HeaderDropdown from "./HeaderDropdow";
 
 const Header = () => {
   return (
-    <div className="flex justify-between items-center h-[3rem] w-full px-[12px] bg-white shadow-md fixed z-40 ">
+    <div className="flex justify-between items-center h-[3rem] w-full px-[12px] fixed z-40 ">
       <div className="flex gap-5 items-center">
         <Link to="/" className="cursor-pointer">
           <p className="font-semibold">Aggregate</p>

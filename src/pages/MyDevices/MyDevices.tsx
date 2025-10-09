@@ -49,7 +49,7 @@ const MyDevices = () => {
     loadClients();
   }, [token?.user_id]);
   return (
-    <div className="p-4">
+    <div className="p-4 h-96 overflow-y-scroll">
       <Card className="bg-gray-50">
         <CardHeader>
           <CardTitle>My Devices</CardTitle>

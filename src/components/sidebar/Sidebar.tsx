@@ -7,7 +7,6 @@ import {
   Laptop,
   LockKeyholeOpen,
   LogOut,
-  Settings,
   User,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
@@ -65,32 +64,6 @@ const Sidebar = () => {
             )}
           </NavLink>
           <NavLink
-            to="/change-password"
-            className={({ isActive }) =>
-              isActive
-                ? "rounded-full flex gap-2.5 items-center p-1.5 bg-[linear-gradient(90deg,#1C3BA4_0%,#00B4ED_122.37%)]"
-                : "flex gap-2.5 items-center w-full"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <span className={isActive ? "rounded-full p-2 bg-white" : ""}>
-                  <LockKeyholeOpen
-                    size={24}
-                    color={isActive ? "#0039A3" : "black"}
-                  />
-                </span>
-                <span
-                  className={` ${
-                    isActive ? "text-[18px] font-semibold text-white" : ""
-                  } `}
-                >
-                  Change Password
-                </span>
-              </>
-            )}
-          </NavLink>
-          <NavLink
             to="/update-profile"
             className={({ isActive }) =>
               isActive
@@ -125,11 +98,31 @@ const Sidebar = () => {
               <span className="text-base  font-normal">Appointments</span>
             </div>
           </NavLink>
-          <NavLink to={""}>
-            <div className="flex gap-2.5 items-center p-1.5">
-              <Settings size={24} />
-              <span className="text-base  font-normal">Profile</span>
-            </div>
+          <NavLink
+            to="/change-password"
+            className={({ isActive }) =>
+              isActive
+                ? "rounded-full flex gap-2.5 items-center p-1.5 bg-[linear-gradient(90deg,#1C3BA4_0%,#00B4ED_122.37%)]"
+                : "flex gap-2.5 items-center w-full"
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <span className={isActive ? "rounded-full p-2 bg-white" : ""}>
+                  <LockKeyholeOpen
+                    size={24}
+                    color={isActive ? "#0039A3" : "black"}
+                  />
+                </span>
+                <span
+                  className={` ${
+                    isActive ? "text-[18px] font-semibold text-white" : ""
+                  } `}
+                >
+                  Change Password
+                </span>
+              </>
+            )}
           </NavLink>
         </div>
       </div>

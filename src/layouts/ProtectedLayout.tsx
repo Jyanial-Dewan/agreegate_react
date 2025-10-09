@@ -10,9 +10,13 @@ export const ProtectedLayout = () => {
     <div className="bg-body-color h-screen">
       {/* <Header /> */}
 
-      <div className="flex justify-between">
-        <Sidebar />
-        <div className="absolute right-3 top-3 flex items-center gap-2">
+      <Sidebar />
+      <div className="ml-72 py-2 flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-semibold">Client Details</h2>
+          <p>lorem lorem</p>
+        </div>
+        <div className=" flex items-center gap-2 pr-2">
           <Avatar className="border cursor-pointer">
             <AvatarImage
               className="object-cover object-center"
@@ -20,12 +24,13 @@ export const ProtectedLayout = () => {
             />
             <AvatarFallback>{user?.first_name.slice(0, 1)}</AvatarFallback>
           </Avatar>
-          <p>
+          <p className="capitalize">
             {user?.first_name} {user?.last_name}
           </p>
         </div>
       </div>
-      <div className="pt-[4rem] ml-72">
+
+      <div className="pt-4 ml-72">
         <Outlet />
       </div>
     </div>

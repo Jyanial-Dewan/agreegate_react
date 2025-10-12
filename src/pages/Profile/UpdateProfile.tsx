@@ -3,9 +3,55 @@ import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 // import Image from "../../assets/profile.jpg";
 import ProfileModal from "./ProfileModal";
 import PhotoModal from "./PhotoModal";
+// import { useAuthContext } from "@/context/AuthContext/useContext";
+// import { useParams } from "react-router";
+// import { useEffect, useState } from "react";
+// import { loadData, nodeURL } from "@/Utility/apiFuntion";
+// import { nodeApi } from "@/services/api";
+// import type { IClientInfo } from "@/types/deviceInfo.interface";
+// import Loader from "@/components/common/Loader";
 
 const UpdateProfile = () => {
   const { user } = useGlobalContext();
+  // const { token } = useAuthContext();
+  // const { device_id } = useParams();
+
+  // const [info, setInfo] = useState<IClientInfo | null>(null);
+  // const [locationInfos, setLocationInfos] = useState<IClientLocationInfo[]>([]);
+  // const [loading, setLoading] = useState(false);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [totalPageNumbers, setTotalPageNumbers] = useState(1);
+
+  // useEffect(() => {
+  //   const loadClients = async () => {
+  //     const clientParams = {
+  //       baseURL: nodeURL,
+  //       url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}&device_id=${device_id}`,
+  //       setLoading: setLoading,
+  //     };
+
+  //     const clientRes = await loadData(clientParams);
+  //     console.log(clientRes);
+  //     if (clientRes?.status === 200) {
+  //       setInfo(clientRes.data.result);
+  //     }
+
+  //     // const locationParams = {
+  //     //   baseURL: nodeURL,
+  //     //   url: `${nodeApi.ClientLocationInfo}?device_id=${device_id}&user_id=${token?.user_id}&page=${currentPage}&limit=10`,
+  //     //   setLoading: setLoading,
+  //     // };
+
+  //     //   const locationRes = await loadData(locationParams);
+  //     //   console.log(locationRes);
+  //     //   if (locationRes?.status === 200) {
+  //     //     setLocationInfos(locationRes.data.result);
+  //     //     setTotalPageNumbers(locationRes.data.totalPages);
+  //     //   }
+  //   };
+
+  //   loadClients();
+  // }, [token?.user_id, device_id, currentPage]);
 
   return (
     <div className="flex flex-col gap-3.5">
@@ -28,9 +74,13 @@ const UpdateProfile = () => {
           <p className="text-[14px] font-semibold text-client-primary capitalize">
             {user?.user_type}
           </p>
-          <p className="text-[14px] font-semibold text-gray-600">
-            West Shewrapara,Dhaka,Bangladesh
-          </p>
+          {/* {loading ? (
+            <Loader size="40" color="black" />
+          ) : (
+            <p className="text-[14px] font-semibold text-gray-600 capitalize">
+              {info?.city} {info?.region} {info?.country}
+            </p>
+          )} */}
         </div>
       </div>
 

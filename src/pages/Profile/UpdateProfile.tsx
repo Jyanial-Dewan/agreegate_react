@@ -25,6 +25,8 @@ import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 import { nodeURL, putData } from "@/Utility/apiFuntion";
 import type { method } from "@/hooks/useAxios";
 import useAxios from "@/hooks/useAxios";
+import Image from "../../assets/profile.jpg";
+import { Pencil } from "lucide-react";
 
 const formSchema = z.object({
   username: z.string().min(2, "Too short").max(50, "Too long"),
@@ -32,20 +34,12 @@ const formSchema = z.object({
   lastname: z.string().min(2, "Too short"),
   email: z.email("Type valid email"),
   phone_number: z.string().min(11, "Please enter at least 11 digits"),
-  // password: z.string().min(8, "Too short"),
-  // confirm: z.string().min(8, "Too short"),
 });
-// .refine((data) => data.password === data.confirm, {
-//   message: "Passwords do not match",
-//   path: ["confirm"],
-// });
 
 const UpdateProfile = () => {
   const { token } = useAuthContext();
   const { user, setUser } = useGlobalContext();
   const { fetchData } = useAxios<IUser>("node");
-  // const [showPassword, setShowPassword] = useState(false);
-  // const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [preview, setPreview] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -107,21 +101,6 @@ const UpdateProfile = () => {
     }
   };
 
-  // const handleShowPassword = () => {
-  //   if (showPassword) {
-  //     setShowPassword(false);
-  //   } else {
-  //     setShowPassword(true);
-  //   }
-  // };
-  // const handleShowConfirmPassword = () => {
-  //   if (showConfirmPassword) {
-  //     setShowConfirmPassword(false);
-  //   } else {
-  //     setShowConfirmPassword(true);
-  //   }
-  // };
-
   const handleChangePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
@@ -165,137 +144,150 @@ const UpdateProfile = () => {
   };
 
   return (
-    <div className="flex gap-3 justify-center">
-      <div className="w-96 flex flex-col border shadow-md ">
-        {/* Header */}
-        <div className="flex mb-2 items-center h-12 bg-gray-200 border-b border-gray-500">
-          <h3 className="px-5 font-bold text-xl">Profile Photo</h3>
+    <div className="flex flex-col gap-3.5">
+      <div className="flex items-center gap-2 rounded-lg bg-white p-5">
+        <div className="relative">
+          <img
+            className="h-28 w-28 rounded-full border-2 border-client-primary object-cover"
+            src={`http://localhost:3000/api/${user?.profile_picture.original}`}
+            // src={Image}
+            alt="Profile"
+          />
+          <button className="absolute bottom-1 -right-1 p-2 rounded-lg bg-client-primary cursor-pointer">
+            <Pencil size={15} color="white" />
+          </button>
         </div>
-        {/* Content area */}
-        <div className="flex-1 flex justify-center items-center">
-          <div className="flex flex-col justify-center items-center">
-            <img
-              className="h-28 w-28 rounded-full"
-              src={`http://localhost:3000/api/${user?.profile_picture.original}`}
-              alt="Profile"
-            />
-            <h2 className="font-semibold">
+        <div className="flex justify-between w-full">
+          <div>
+            <h2 className="capitalize font-bold">
               {user?.first_name} {user?.last_name}
             </h2>
-            <p className="py-3">JPG or PNG no larger than 200KB</p>
+            <p className="text-[14px] font-semibold text-client-primary capitalize">
+              {user?.user_type}
+            </p>
+            <p className="text-[14px] font-semibold text-gray-600">
+              West Shewrapara,Dhaka,Bangladesh
+            </p>
+          </div>
+          <button className="p-2 rounded-lg bg-client-primary self-start cursor-pointer">
+            <Pencil size={15} color="white" />
+          </button>
+        </div>
+      </div>
 
-            <label className="border rounded-sm cursor-pointer">
-              <div className="flex justify-center items-center w-80 h-30">
-                {preview ? (
-                  <img className="w-25 h-25 rounded-full" src={preview} />
-                ) : (
-                  <p className="text-gray-600">Drop Photo</p>
-                )}
-              </div>
-              <input
-                type="file"
-                accept="image/png, image/jpeg"
-                className="hidden"
-                onChange={handleChangePhoto}
-              />
-            </label>
-
-            <Button
-              disabled={file === null || uploading}
-              onClick={handleUploadPhoto}
-              className="cursor-pointer my-3"
-            >
-              {uploading ? <Loader color="white" /> : "Upload"}
-            </Button>
+      <div className="bg-white rounded-lg p-5">
+        {/* Update Profile */}
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-bold text-xl">Profile Details</h3>
+          <button className="p-2 rounded-lg bg-client-primary cursor-pointer">
+            <Pencil size={15} color="white" />
+          </button>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <h2 className="font-normal text-xs text-gray-500">First Name</h2>
+            <p className="text-base font-medium">{user?.first_name}</p>
+          </div>
+          <div>
+            <h2 className="font-normal text-xs text-gray-500">Last Name</h2>
+            <p className="text-base font-medium">{user?.last_name}</p>
+          </div>
+          <div>
+            <h2 className="font-normal text-xs text-gray-500">Username</h2>
+            <p className="text-base font-medium">{user?.user_name}</p>
+          </div>
+          <div>
+            <h2 className="font-normal text-xs text-gray-500">Email</h2>
+            <p className="text-base font-medium">{user?.email_address}</p>
+          </div>
+          <div>
+            <h2 className="font-normal text-xs text-gray-500">Email</h2>
+            <p className="text-base font-medium">{user?.email_address}</p>
+          </div>
+          <div>
+            <h2 className="font-normal text-xs text-gray-500">Phone Number</h2>
+            <p className="text-base font-medium">{user?.phone_number}</p>
           </div>
         </div>
       </div>
-      <div>
-        {/* Update Profile */}
-        <div className="flex items-center h-12 bg-gray-200 border-b border-gray-500">
-          <h3 className="px-5 font-bold text-xl">Profile Details</h3>
-        </div>
-        <div className="p-5 border shadow-md">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="flex flex-col gap-3">
-                <FormField
-                  control={form.control}
-                  name="firstname"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="first name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex gap-3">
-                  <FormField
-                    control={form.control}
-                    name="lastname"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="last name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Username</FormLabel>
-                        <FormControl>
-                          <Input placeholder="username" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <FormField
+              control={form.control}
+              name="firstname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-500">First Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="first name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="last name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                <FormField
-                  control={form.control}
-                  name="phone_number"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone number</FormLabel>
-                      <FormControl>
-                        <PhoneInput
-                          international
-                          defaultCountry="BD"
-                          placeholder="Enter phone number"
-                          {...field}
-                          value={field.value as E164Number}
-                          onChange={(value) => field.onChange(value)}
-                          className="w-full border rounded-md p-2 focus:outline-none"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {/* <div className="flex gap-3">
+            <FormField
+              control={form.control}
+              name="phone_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone number</FormLabel>
+                  <FormControl>
+                    <PhoneInput
+                      international
+                      defaultCountry="BD"
+                      placeholder="Enter phone number"
+                      {...field}
+                      value={field.value as E164Number}
+                      onChange={(value) => field.onChange(value)}
+                      className="w-full border rounded-md p-2 focus:outline-none"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* <div className="flex gap-3">
                   <FormField
                     control={form.control}
                     name="password"
@@ -357,18 +349,16 @@ const UpdateProfile = () => {
                     )}
                   />
                 </div> */}
-              </div>
-              <Button
-                type="submit"
-                className="w-full cursor-pointer"
-                disabled={isUpdating}
-              >
-                {isUpdating ? <Loader color="white" /> : "Update"}
-              </Button>
-            </form>
-          </Form>
-        </div>
-      </div>
+          </div>
+          <Button
+            type="submit"
+            className="cursor-pointer self-center"
+            disabled={isUpdating}
+          >
+            {isUpdating ? <Loader color="white" /> : "Update"}
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };

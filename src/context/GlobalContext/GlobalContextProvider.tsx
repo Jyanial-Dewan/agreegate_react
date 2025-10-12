@@ -26,8 +26,6 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
   });
   const { token } = useAuthContext();
 
-  console.log(user, "user");
-
   const socket_url = import.meta.env.VITE_SOCKET_URL;
   // Memoize the socket connection so that it's created only once
   const socket = useMemo(() => {

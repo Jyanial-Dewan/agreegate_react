@@ -7,7 +7,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-interface Pagination4Props {
+interface Props {
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   totalPageNumbers: number;
@@ -17,7 +17,7 @@ const Pagination = ({
   currentPage,
   setCurrentPage,
   totalPageNumbers,
-}: Pagination4Props) => {
+}: Props) => {
   const [goToPage, setGoToPage] = useState<number>(currentPage);
   const handleNext = () => {
     if (totalPageNumbers > currentPage) {
@@ -40,11 +40,7 @@ const Pagination = ({
   };
   const handleSetCurrentPage = (value: number) => {
     if (value > totalPageNumbers) {
-      toast({
-        title: `${value} is not a valid page number.`,
-        variant: "destructive",
-        description: "Please enter a valid page number.",
-      });
+      toast(`${value} is not a valid page number.`);
       return;
     } else {
       setCurrentPage(value);

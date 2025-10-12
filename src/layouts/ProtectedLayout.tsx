@@ -2,21 +2,24 @@
 import Sidebar from "@/components/sidebar/Sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
-import { Outlet } from "react-router";
+import { pathToTitle } from "@/Utility/common";
+import { Outlet, useLocation } from "react-router";
 
 export const ProtectedLayout = () => {
   const { user } = useGlobalContext();
+  const location = useLocation();
   return (
-    <div className="bg-body-color h-screen">
+    <div className="bg-body-color">
       {/* <Header /> */}
 
       <Sidebar />
-      <div className="ml-72 py-2 flex justify-between items-center">
+      <div className="ml-[220Px] p-4 flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-semibold">Client Details</h2>
-          <p>lorem lorem</p>
+          <h2 className="text-2xl font-semibold">
+            {pathToTitle(location.pathname)}
+          </h2>
         </div>
-        <div className=" flex items-center gap-2 pr-2">
+        <div className=" flex items-center gap-2">
           <Avatar className="border cursor-pointer">
             <AvatarImage
               className="object-cover object-center"
@@ -30,7 +33,7 @@ export const ProtectedLayout = () => {
         </div>
       </div>
 
-      <div className="pt-4 ml-72">
+      <div className="p-4 ml-[220Px]">
         <Outlet />
       </div>
     </div>

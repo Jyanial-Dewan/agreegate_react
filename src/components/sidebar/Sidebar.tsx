@@ -34,7 +34,7 @@ const Sidebar = () => {
     }
   };
   return (
-    <div className="absolute z-50 px-6 min-h-screen w-[276px] bg-client-secondary flex flex-col justify-between">
+    <div className="fixed z-50 px-6 min-h-screen w-[220Px] bg-client-secondary flex flex-col justify-between">
       <div>
         <h2 className="text-3xl text-center py-6 font-bold">LOGO HERE</h2>
         <h5 className="font-normal uppercase">Main Menu</h5>
@@ -58,7 +58,7 @@ const Sidebar = () => {
                     isActive ? "text-[18px] font-semibold text-white" : ""
                   } `}
                 >
-                  My Device
+                  My Devices
                 </span>
               </>
             )}

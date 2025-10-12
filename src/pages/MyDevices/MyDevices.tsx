@@ -30,23 +30,28 @@ const MyDevices = () => {
   const navigate = useNavigate();
 
   const [clinets, setClients] = useState<IClientInfo[]>([]);
+  const [totalClients, setTotalClients] = useState(0);
+  const [totalActiveClients, setTotalActiveClients] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const loadClients = async () => {
-      const params = {
-        baseURL: nodeURL,
-        url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}`,
-        setLoading: setLoading,
-      };
-      const res = await loadData(params);
-
-      if (res?.status === 200) {
-        setClients(res.data.result);
-      }
+  const loadClients = async () => {
+    const params = {
+      baseURL: nodeURL,
+      url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}`,
+      setLoading: setLoading,
     };
+    const res = await loadData(params);
+
+    if (res?.status === 200) {
+      setClients(res.data.result);
+      setTotalClients(res.data.totalData);
+      setTotalActiveClients(res.data.totalActive);
+    }
+  };
+
+  useEffect(() => {
     loadClients();
-  }, [token?.user_id]);
+  }, []);
   return (
     <div>
       <div className="flex items-center gap-3">
@@ -56,7 +61,7 @@ const MyDevices = () => {
           </p>
           <div>
             <h2 className="text-base font-medium">Total Device</h2>
-            <p className="text-2xl font-bold">{clinets.length}</p>
+            <p className="text-2xl font-bold">{totalClients}</p>
           </div>
         </div>
         <div className="flex gap-5 items-center bg-white p-3.5 rounded-xl">
@@ -65,7 +70,7 @@ const MyDevices = () => {
           </p>
           <div>
             <h2 className="text-base font-medium">Active Device</h2>
-            <p className="text-2xl font-bold">34</p>
+            <p className="text-2xl font-bold">{totalActiveClients}</p>
           </div>
         </div>
       </div>
@@ -75,7 +80,10 @@ const MyDevices = () => {
             <CardTitle>
               <div className="flex justify-between items-center">
                 <h2>My Devices</h2>
-                <button className="text-[14px] font-normal p-1.5 bg-client-primary cursor-pointer text-white rounded-lg">
+                <button
+                  className="text-[14px] font-normal p-1.5 bg-client-primary cursor-pointer text-white rounded-lg"
+                  onClick={loadClients}
+                >
                   <div className="flex gap-1 items-center">
                     <RefreshCcw size={20} color="white" />
                     <span>Refresh</span>
@@ -98,7 +106,9 @@ const MyDevices = () => {
                 {clinets.map((cl) => (
                   <div
                     key={cl.device_id}
-                    className="p-4 bg-white flex justify-between items-center"
+                    className={`p-4 flex justify-between items-center ${
+                      cl.is_active ? "bg-GREEN-100" : "bg-white"
+                    }`}
                   >
                     <div className="flex gap-2">
                       <div>

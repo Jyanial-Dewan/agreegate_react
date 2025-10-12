@@ -22,6 +22,7 @@ export interface IClientInfo {
   country?: string;
   city?: string;
   autonomus_system?: string;
+  is_active: boolean;
 }
 
 export interface IClientLocationInfo {

@@ -79,6 +79,7 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
           ip_org: result.org,
           ip_address: result.query,
           autonomus_system: result.as,
+          is_active: result.is_active,
         }));
       }
     };
@@ -100,6 +101,7 @@ export const GlobalProvider = ({ children }: GlobalContextProviderProp) => {
         os_name: result.os.name,
         os_version: result.os.version,
         user_agent: result.ua,
+        is_active: true,
       }));
     }
   }, []);

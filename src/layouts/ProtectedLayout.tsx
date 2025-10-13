@@ -25,7 +25,9 @@ export const ProtectedLayout = () => {
               className="object-cover object-center"
               src={`http://localhost:3000/api/${user?.profile_picture.original}`}
             />
-            <AvatarFallback>{user?.first_name.slice(0, 1)}</AvatarFallback>
+            <AvatarFallback className="capitalize text-base">
+              {user?.first_name.slice(0, 1)}
+            </AvatarFallback>
           </Avatar>
           <p className="capitalize">
             {user?.first_name} {user?.last_name}

@@ -84,6 +84,7 @@ const Login = () => {
         setDeviceInfo((prev) => ({
           ...prev,
           deviceId: clientInfoResponse.data.result.device_id,
+          is_active: prev?.is_active ?? true,
         }));
         localStorage.setItem(
           "ClientInfo",
@@ -173,7 +174,7 @@ const Login = () => {
             />
             <Button
               type="submit"
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer bg-client-primary hover:bg-client-primary"
               disabled={isLoading}
             >
               {isLoading ? <Loader color="white" /> : "Login"}

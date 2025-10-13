@@ -1,68 +1,106 @@
-// import Loader from "@/components/common/Loader";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
-// import Image from "../../assets/profile.jpg";
-import ProfileModal from "./ProfileModal";
 import PhotoModal from "./PhotoModal";
-// import { useAuthContext } from "@/context/AuthContext/useContext";
-// import { useParams } from "react-router";
-// import { useEffect, useState } from "react";
-// import { loadData, nodeURL } from "@/Utility/apiFuntion";
-// import { nodeApi } from "@/services/api";
-// import type { IClientInfo } from "@/types/deviceInfo.interface";
-// import Loader from "@/components/common/Loader";
+import { Input } from "@/components/ui/input";
+import type { E164Number } from "libphonenumber-js/core";
+import PhoneInput from "react-phone-number-input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { nodeURL, putData } from "@/Utility/apiFuntion";
+import { nodeApi } from "@/services/api";
+import { useEffect, useState } from "react";
+import { useAuthContext } from "@/context/AuthContext/useContext";
+
+import { Button } from "@/components/ui/button";
+import Loader from "@/components/common/Loader";
+
+const formSchema = z.object({
+  username: z.string().min(2, "Too short").max(50, "Too long"),
+  firstname: z.string().min(2, "Too short"),
+  lastname: z.string().min(2, "Too short"),
+  email: z.email("Type valid email"),
+  phone_number: z.string().min(11, "Please enter at least 11 digits"),
+});
 
 const UpdateProfile = () => {
-  const { user } = useGlobalContext();
-  // const { token } = useAuthContext();
-  // const { device_id } = useParams();
+  const { token } = useAuthContext();
+  const { user, deviceInfo } = useGlobalContext();
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  // const [info, setInfo] = useState<IClientInfo | null>(null);
-  // const [locationInfos, setLocationInfos] = useState<IClientLocationInfo[]>([]);
-  // const [loading, setLoading] = useState(false);
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [totalPageNumbers, setTotalPageNumbers] = useState(1);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      phone_number: "",
+    },
+  });
 
-  // useEffect(() => {
-  //   const loadClients = async () => {
-  //     const clientParams = {
-  //       baseURL: nodeURL,
-  //       url: `${nodeApi.ClientInfo}?user_id=${token?.user_id}&device_id=${device_id}`,
-  //       setLoading: setLoading,
-  //     };
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        username: user?.user_name,
+        firstname: user?.first_name,
+        lastname: user?.last_name,
+        email: user?.email_address,
+        phone_number: user?.phone_number,
+      });
+    }
+  }, [user, form]);
 
-  //     const clientRes = await loadData(clientParams);
-  //     console.log(clientRes);
-  //     if (clientRes?.status === 200) {
-  //       setInfo(clientRes.data.result);
-  //     }
+  /** Update function */
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const info = {
+      user_type: "person",
+      user_name: values.username,
+      email_address: values.email,
+      first_name: values.firstname,
+      last_name: values.lastname,
+      phone_number: values.phone_number,
+    };
 
-  //     // const locationParams = {
-  //     //   baseURL: nodeURL,
-  //     //   url: `${nodeApi.ClientLocationInfo}?device_id=${device_id}&user_id=${token?.user_id}&page=${currentPage}&limit=10`,
-  //     //   setLoading: setLoading,
-  //     // };
-
-  //     //   const locationRes = await loadData(locationParams);
-  //     //   console.log(locationRes);
-  //     //   if (locationRes?.status === 200) {
-  //     //     setLocationInfos(locationRes.data.result);
-  //     //     setTotalPageNumbers(locationRes.data.totalPages);
-  //     //   }
-  //   };
-
-  //   loadClients();
-  // }, [token?.user_id, device_id, currentPage]);
+    const putParams = {
+      baseURL: nodeURL,
+      url: nodeApi.User + "/" + token?.user_id,
+      setLoading: setIsUpdating,
+      payload: info,
+      isToast: true,
+    };
+    const res = await putData(putParams);
+    if (res?.status === 200) {
+      form.reset({
+        username: res.data.result.user_name,
+        firstname: res.data.result.first_name,
+        lastname: res.data.result.last_name,
+        email: res.data.result.email_address,
+        phone_number: res.data.result.phone_number,
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col gap-3.5">
       <div className="flex items-center gap-2 rounded-lg bg-white p-5">
         <div className="relative">
-          <img
-            className="h-28 w-28 rounded-full border-2 border-client-primary object-cover"
-            src={`http://localhost:3000/api/${user?.profile_picture.original}`}
-            // src={Image}
-            alt="Profile"
-          />
+          <Avatar className="h-28 w-28 rounded-full border-2 border-client-primary object-cover">
+            <AvatarImage
+              src={`http://localhost:3000/api/${user?.profile_picture.original}`}
+            />
+            <AvatarFallback className="capitalize text-2xl">
+              {user?.user_name.slice(0, 1)}
+            </AvatarFallback>
+          </Avatar>
           <div className="absolute bottom-1 right-1">
             <PhotoModal />
           </div>
@@ -71,32 +109,150 @@ const UpdateProfile = () => {
           <h2 className="capitalize font-bold">
             {user?.first_name} {user?.last_name}
           </h2>
-          <p className="text-[14px] font-semibold text-client-primary capitalize">
-            {user?.user_type}
+
+          <p className="text-[14px] font-semibold text-gray-600 capitalize">
+            {deviceInfo?.city}, {deviceInfo?.region_name}, {deviceInfo?.country}
           </p>
-          {/* {loading ? (
-            <Loader size="40" color="black" />
-          ) : (
-            <p className="text-[14px] font-semibold text-gray-600 capitalize">
-              {info?.city} {info?.region} {info?.country}
-            </p>
-          )} */}
         </div>
       </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="bg-white rounded-lg p-5">
+            {/* Update Profile */}
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-xl">Profile Details</h3>
 
-      <div className="bg-white rounded-lg p-5">
-        {/* Update Profile */}
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-xl">Profile Details</h3>
-          <ProfileModal />
-        </div>
-        <div className="grid grid-cols-2 gap-2">
+              {/* <button
+                  onClick={() => form.setFocus("firstname")}
+                  className="p-2 rounded-lg bg-client-primary cursor-pointer"
+                >
+                  <Pencil size={15} color="white" />
+                </button> */}
+              <Button
+                type="submit"
+                className="cursor-pointer"
+                disabled={!form.formState.isDirty || isUpdating}
+              >
+                {isUpdating ? <Loader color="white" /> : "Update"}
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <FormField
+                control={form.control}
+                name="firstname"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-normal text-xs text-gray-500">
+                      First Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="text-base font-medium border-0 shadow-none"
+                        placeholder="first name"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastname"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-normal text-xs text-gray-500">
+                      Last Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="text-base font-medium border-0 shadow-none"
+                        placeholder="last name"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-normal text-xs text-gray-500">
+                      Username
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="text-base font-medium border-0 shadow-none"
+                        placeholder="username"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-normal text-xs text-gray-500">
+                      Email
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="text-base font-medium border-0 shadow-none"
+                        type="email"
+                        placeholder="email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-normal text-xs text-gray-500">
+                      Phone number
+                    </FormLabel>
+                    <FormControl>
+                      <PhoneInput
+                        international
+                        defaultCountry="BD"
+                        placeholder="Enter phone number"
+                        {...field}
+                        value={field.value as E164Number}
+                        onChange={(value) => field.onChange(value)}
+                        className="text-base font-medium w-full p-2"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* <div className="grid grid-cols-2 gap-2">
           <div>
             <h2 className="font-normal text-xs text-gray-500">First Name</h2>
             <p className="text-base font-medium">{user?.first_name}</p>
           </div>
           <div>
             <h2 className="font-normal text-xs text-gray-500">Last Name</h2>
+            <Input
+              className="border-0 shadow-none"
+              type="text"
+              value={user?.first_name}
+            />
             <p className="text-base font-medium">{user?.last_name}</p>
           </div>
           <div>
@@ -115,8 +271,10 @@ const UpdateProfile = () => {
             <h2 className="font-normal text-xs text-gray-500">Phone Number</h2>
             <p className="text-base font-medium">{user?.phone_number}</p>
           </div>
-        </div>
-      </div>
+        </div> */}
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };

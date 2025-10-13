@@ -1,7 +1,6 @@
 import type { E164Number } from "libphonenumber-js/core";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,11 +15,11 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { nodeApi } from "@/services/api";
-import Loader from "@/components/common/Loader";
 import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import RegisterImage from "/images/register.svg";
 import { nodeURL, postData } from "@/Utility/apiFuntion";
+import CustomButton from "@/components/Buttons/CustomButton";
 
 const formSchema = z
   .object({
@@ -246,13 +245,13 @@ const SignUp = () => {
                 />
               </div>
             </div>
-            <Button
+            <CustomButton
               type="submit"
-              className="w-full cursor-pointer"
+              name="Register"
+              styleType="full"
               disabled={isLoading}
-            >
-              {isLoading ? <Loader color="white" /> : "Register"}
-            </Button>
+              isLoading={isLoading}
+            />
           </form>
         </Form>
 

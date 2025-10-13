@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import { useForm } from "react-hook-form";
@@ -15,13 +14,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { nodeApi } from "@/services/api";
-import Loader from "@/components/common/Loader";
 import axios from "axios";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 import ClientImage from "/images/client.svg";
 import { nodeURL, postData } from "@/Utility/apiFuntion";
+import CustomButton from "@/components/Buttons/CustomButton";
 
 const formSchema = z.object({
   email: z.string().min(2, "Too Short"),
@@ -172,13 +171,20 @@ const Login = () => {
                 </FormItem>
               )}
             />
-            <Button
+            {/* <Button
               type="submit"
               className="w-full cursor-pointer bg-client-primary hover:bg-client-primary"
               disabled={isLoading}
             >
               {isLoading ? <Loader color="white" /> : "Login"}
-            </Button>
+            </Button> */}
+            <CustomButton
+              styleType="full"
+              type="submit"
+              name="login"
+              disabled={isLoading}
+              isLoading={isLoading}
+            />
           </form>
         </Form>
         {/* <span className="text-red-600">{error}</span> */}

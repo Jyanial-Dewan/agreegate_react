@@ -20,8 +20,7 @@ import { nodeApi } from "@/services/api";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 
-import { Button } from "@/components/ui/button";
-import Loader from "@/components/common/Loader";
+import CustomButton from "@/components/Buttons/CustomButton";
 
 const formSchema = z.object({
   username: z.string().min(2, "Too short").max(50, "Too long"),
@@ -128,13 +127,21 @@ const UpdateProfile = () => {
                 >
                   <Pencil size={15} color="white" />
                 </button> */}
-              <Button
+
+              {/* <Button
                 type="submit"
                 className="cursor-pointer"
                 disabled={!form.formState.isDirty || isUpdating}
               >
                 {isUpdating ? <Loader color="white" /> : "Update"}
-              </Button>
+              </Button> */}
+              <CustomButton
+                styleType="rectangular"
+                type="submit"
+                name="update"
+                disabled={!form.formState.isDirty || isUpdating}
+                isLoading={isUpdating}
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-3">

@@ -24,6 +24,7 @@ import Loader from "@/components/common/Loader";
 import { useNavigate } from "react-router";
 import { loadData, nodeURL } from "@/Utility/apiFuntion";
 import { CircleStar, EllipsisVertical, Eye, RefreshCcw } from "lucide-react";
+import CustomButton from "@/components/Buttons/CustomButton";
 
 const MyDevices = () => {
   const { token } = useAuthContext();
@@ -80,7 +81,21 @@ const MyDevices = () => {
             <CardTitle>
               <div className="flex justify-between items-center">
                 <h2>My Devices</h2>
-                <button
+                <CustomButton
+                  styleType="square"
+                  type="button"
+                  onClick={loadClients}
+                >
+                  <div className="flex gap-1 items-center">
+                    <RefreshCcw
+                      className={loading ? "animate-spin" : ""}
+                      size={20}
+                      color="white"
+                    />
+                    <span>Refresh</span>
+                  </div>
+                </CustomButton>
+                {/* <button
                   className="text-[14px] font-normal p-1.5 bg-client-primary cursor-pointer text-white rounded-lg"
                   onClick={loadClients}
                 >
@@ -88,7 +103,7 @@ const MyDevices = () => {
                     <RefreshCcw size={20} color="white" />
                     <span>Refresh</span>
                   </div>
-                </button>
+                </button> */}
               </div>
             </CardTitle>
             <CardDescription>

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,11 +11,11 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { nodeApi } from "@/services/api";
-import Loader from "@/components/common/Loader";
 import { useState } from "react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { nodeURL, postData } from "@/Utility/apiFuntion";
+import CustomButton from "@/components/Buttons/CustomButton";
 
 const formSchema = z
   .object({
@@ -199,9 +198,13 @@ const ChangePassword = () => {
                   )}
                 />
               </div>
-              <Button type="submit" className="w-full cursor-pointer">
-                {isLoading ? <Loader /> : "Update"}
-              </Button>
+              <CustomButton
+                styleType="full"
+                type="submit"
+                name="update"
+                disabled={isLoading}
+                isLoading={isLoading}
+              />
             </form>
           </Form>
         </div>

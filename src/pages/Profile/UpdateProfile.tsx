@@ -21,6 +21,8 @@ import { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
 
 import CustomButton from "@/components/Buttons/CustomButton";
+import { Save } from "lucide-react";
+import CustomTooltip from "@/components/common/CustomTooltip";
 
 const formSchema = z.object({
   username: z.string().min(2, "Too short").max(50, "Too long"),
@@ -120,28 +122,16 @@ const UpdateProfile = () => {
             {/* Update Profile */}
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-xl">Profile Details</h3>
-
-              {/* <button
-                  onClick={() => form.setFocus("firstname")}
-                  className="p-2 rounded-lg bg-client-primary cursor-pointer"
+              <CustomTooltip tooltipTitle="Save">
+                <CustomButton
+                  styleType="square"
+                  type="submit"
+                  disabled={!form.formState.isDirty || isUpdating}
+                  isLoading={isUpdating}
                 >
-                  <Pencil size={15} color="white" />
-                </button> */}
-
-              {/* <Button
-                type="submit"
-                className="cursor-pointer"
-                disabled={!form.formState.isDirty || isUpdating}
-              >
-                {isUpdating ? <Loader color="white" /> : "Update"}
-              </Button> */}
-              <CustomButton
-                styleType="rectangular"
-                type="submit"
-                name="update"
-                disabled={!form.formState.isDirty || isUpdating}
-                isLoading={isUpdating}
-              />
+                  <Save size={24} color="white" />
+                </CustomButton>
+              </CustomTooltip>
             </div>
 
             <div className="grid grid-cols-2 gap-3">

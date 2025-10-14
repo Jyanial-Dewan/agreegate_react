@@ -28,9 +28,12 @@ const CustomButton = ({
   return (
     <button
       type={type}
+      style={{ backgroundColor }}
       disabled={disabled}
-      className={`p-2 rounded-lg bg-[${backgroundColor}] capitalize text-white hover:opacity-90 ${
-        disabled ? "opacity-60 cursor-not-allowed" : " cursor-pointer"
+      className={`p-2 rounded-lg capitalize text-white ${
+        disabled
+          ? "opacity-60 cursor-not-allowed"
+          : "hover:opacity-90 cursor-pointer"
       } ${styleType === "full" && "w-full"} ${
         styleType === "rectangular" && "px-5"
       }`}

@@ -1,4 +1,6 @@
-import Loader from "@/components/common/Loader";
+import CustomButton from "@/components/Buttons/CustomButton";
+import CustomTooltip from "@/components/common/CustomTooltip";
+import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,6 +17,7 @@ import { useGlobalContext } from "@/context/GlobalContext/useGlobalContext";
 import useAxios, { type method } from "@/hooks/useAxios";
 import { nodeApi } from "@/services/api";
 import type { IUser } from "@/types/user.interface";
+import { Avatar } from "@radix-ui/react-avatar";
 // import axios from "axios";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
@@ -81,11 +84,17 @@ const PhotoModal = () => {
   };
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <button className="p-2 rounded-lg bg-client-primary cursor-pointer">
+      <CustomTooltip tooltipTitle="Edit">
+        <DialogTrigger asChild>
+          <CustomButton styleType="square" type="button">
+            <Pencil size={15} color="white" />
+          </CustomButton>
+
+          {/* <button className="p-2 rounded-lg bg-client-primary cursor-pointer">
           <Pencil size={15} color="white" />
-        </button>
-      </DialogTrigger>
+        </button> */}
+        </DialogTrigger>
+      </CustomTooltip>
       <DialogContent className="w-1/2">
         <DialogHeader>
           <DialogTitle>Change Photo</DialogTitle>
@@ -93,20 +102,28 @@ const PhotoModal = () => {
         </DialogHeader>
         <div className="flex-1 flex justify-center items-center">
           <div className="flex flex-col justify-center items-center">
-            <img
+            <Avatar className="h-28 w-28 rounded-full border-2 border-client-primary object-cover">
+              <AvatarImage
+                src={`http://localhost:3000/api/${user?.profile_picture.original}`}
+              />
+              <AvatarFallback className="capitalize text-2xl">
+                {user?.user_name.slice(0, 1)}
+              </AvatarFallback>
+            </Avatar>
+            {/* <img
               className="h-32 w-32 rounded-full border-2 border-client-primary"
               src={`http://localhost:3000/api/${user?.profile_picture.original}`}
               alt="Profile"
-            />
+            /> */}
 
-            <p className="py-3">JPG or PNG no larger than 200KB</p>
+            <p className="py-3 font-medium">JPG or PNG no larger than 200KB</p>
 
             <label className="border rounded-sm cursor-pointer">
               <div className="flex justify-center items-center w-80 h-30">
                 {preview ? (
                   <img className="w-25 h-25 rounded-full" src={preview} />
                 ) : (
-                  <p className="text-gray-600">Drop Photo</p>
+                  <p className="text-gray-600 font-medium">Drop Photo</p>
                 )}
               </div>
               <input
@@ -122,13 +139,14 @@ const PhotoModal = () => {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button
+          <CustomButton
+            styleType="square"
+            type="submit"
+            name="Upload"
             disabled={file === null || uploading}
+            isLoading={uploading}
             onClick={handleUploadPhoto}
-            className="cursor-pointer"
-          >
-            {uploading ? <Loader color="white" /> : "Upload"}
-          </Button>
+          ></CustomButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

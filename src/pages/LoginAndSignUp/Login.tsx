@@ -127,11 +127,11 @@ const Login = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username or Email</FormLabel>
+                  <FormLabel>Username, Email or Phone Number</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="username or email"
+                      placeholder="e.g; +88018*, user or email"
                       {...field}
                       className="w-[300px]"
                     />

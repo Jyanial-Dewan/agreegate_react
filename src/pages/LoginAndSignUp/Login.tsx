@@ -83,7 +83,7 @@ const Login = () => {
         setDeviceInfo((prev) => ({
           ...prev,
           deviceId: clientInfoResponse.data.result.device_id,
-          // is_active: prev?.is_active ?? true,
+          is_active: prev?.is_active ?? true,
         }));
         localStorage.setItem(
           "ClientInfo",

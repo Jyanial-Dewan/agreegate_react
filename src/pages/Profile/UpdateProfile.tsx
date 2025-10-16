@@ -96,7 +96,7 @@ const UpdateProfile = () => {
         <div className="relative">
           <Avatar className="h-28 w-28 rounded-full border-2 border-client-primary object-cover">
             <AvatarImage
-              src={`http://localhost:3000/api/${user?.profile_picture.original}`}
+              src={`http://localhost:3000/api/${user?.profile_picture?.original}`}
             />
             <AvatarFallback className="capitalize text-2xl">
               {user?.user_name.slice(0, 1)}

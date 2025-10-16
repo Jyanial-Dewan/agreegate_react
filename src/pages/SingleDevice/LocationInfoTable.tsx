@@ -12,12 +12,14 @@ import { convertDate } from "@/Utility/DateConverter";
 import { useState } from "react";
 import ConnectionModal from "./ConnectionModal";
 import Pagination from "@/components/common/Pagination";
+import Loader from "@/components/common/Loader";
 
 interface Props {
   locationInfos: IClientLocationInfo[];
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   totalPageNumbers: number;
+  isLoading: boolean;
 }
 
 const LocationInfoTable = ({
@@ -25,6 +27,7 @@ const LocationInfoTable = ({
   currentPage,
   setCurrentPage,
   totalPageNumbers,
+  isLoading,
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedConnection, setSelectedConnection] =
@@ -47,19 +50,31 @@ const LocationInfoTable = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {locationInfos.map((info, index) => (
-            <TableRow key={info.connection_id}>
-              <TableCell className="font-medium">{index + 1}</TableCell>
-              <TableCell>{convertDate(info.connection_time)}</TableCell>
-              <TableCell>{convertDate(info.disconnection_time)}</TableCell>
-              <TableCell
-                onClick={() => hanldleDetailClick(info)}
-                className="text-right cursor-pointer text-blue-600"
-              >
-                View Detail
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                <div className="flex justify-center items-center py-8">
+                  <Loader size="40" color="black" />
+                </div>
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            <>
+              {locationInfos.map((info, index) => (
+                <TableRow key={info.connection_id}>
+                  <TableCell className="font-medium">{index + 1}</TableCell>
+                  <TableCell>{convertDate(info.connection_time)}</TableCell>
+                  <TableCell>{convertDate(info.disconnection_time)}</TableCell>
+                  <TableCell
+                    onClick={() => hanldleDetailClick(info)}
+                    className="text-right cursor-pointer text-blue-600"
+                  >
+                    View Detail
+                  </TableCell>
+                </TableRow>
+              ))}
+            </>
+          )}
         </TableBody>
       </Table>
 

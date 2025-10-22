@@ -13,9 +13,10 @@ import { useForm } from "react-hook-form";
 import { nodeApi } from "@/services/api";
 import { useState } from "react";
 import { useAuthContext } from "@/context/AuthContext/useContext";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, LockKeyhole } from "lucide-react";
 import { nodeURL, postData } from "@/Utility/apiFuntion";
 import CustomButton from "@/components/Buttons/CustomButton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const formSchema = z
   .object({
@@ -97,119 +98,139 @@ const ChangePassword = () => {
     }
   };
   return (
-    <div className="flex gap-3 justify-center">
-      <div className="min-w-sm">
-        {/* Update Profile */}
-        <div className="flex items-center h-12 bg-gray-200 border-b border-gray-500">
-          <h3 className="px-5 font-bold text-xl">Change Password</h3>
-        </div>
-        <div className="p-5 border shadow-md">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="flex flex-col gap-3">
-                <FormField
-                  control={form.control}
-                  name="old_password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Old Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={handleShowOldPassword}
-                            className="absolute right-4 top-2 cursor-pointer"
-                          >
-                            {showOldPassword ? (
-                              <EyeOffIcon size={20} color="#6b7280" />
-                            ) : (
-                              <EyeIcon size={20} color="#6b7280" />
-                            )}
-                          </button>
-                          <Input
-                            type={showOldPassword ? "text" : "password"}
-                            placeholder="*********"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="new_password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>New Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={handleShowPassword}
-                            className="absolute right-4 top-2 cursor-pointer"
-                          >
-                            {showPassword ? (
-                              <EyeOffIcon size={20} color="#6b7280" />
-                            ) : (
-                              <EyeIcon size={20} color="#6b7280" />
-                            )}
-                          </button>
-                          <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="*********"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="confirm"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={handleShowConfirmPassword}
-                            className="absolute right-4 top-2 cursor-pointer"
-                          >
-                            {showConfirmPassword ? (
-                              <EyeOffIcon size={20} color="#6b7280" />
-                            ) : (
-                              <EyeIcon size={20} color="#6b7280" />
-                            )}
-                          </button>
-                          <Input
-                            type={showConfirmPassword ? "text" : "password"}
-                            placeholder="*********"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <div className="flex items-center gap-2">
+            <div className="rounded-full p-2 bg-NAVY-100 flex justify-center items-center">
+              <LockKeyhole size={24} color="blue" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="text-base font-semibold">Change Password</p>
+              <p className="text-[13px] font-normal">
+                Update your account password.
+              </p>
+            </div>
+          </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="flex flex-col gap-3">
+              <FormField
+                control={form.control}
+                name="old_password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs text-gray-500 font-normal">
+                      Current Password
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={handleShowOldPassword}
+                          className="absolute right-4 top-2 cursor-pointer"
+                        >
+                          {showOldPassword ? (
+                            <EyeOffIcon size={20} color="#6b7280" />
+                          ) : (
+                            <EyeIcon size={20} color="#6b7280" />
+                          )}
+                        </button>
+                        <Input
+                          className="bg-gray-100"
+                          type={showOldPassword ? "text" : "password"}
+                          placeholder="Enter your current password"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="new_password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs text-gray-500 font-normal">
+                      New Password
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={handleShowPassword}
+                          className="absolute right-4 top-2 cursor-pointer"
+                        >
+                          {showPassword ? (
+                            <EyeOffIcon size={20} color="#6b7280" />
+                          ) : (
+                            <EyeIcon size={20} color="#6b7280" />
+                          )}
+                        </button>
+                        <Input
+                          className="bg-gray-100"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your new password"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirm"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs text-gray-500 font-normal">
+                      Confirm Password
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={handleShowConfirmPassword}
+                          className="absolute right-4 top-2 cursor-pointer"
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOffIcon size={20} color="#6b7280" />
+                          ) : (
+                            <EyeIcon size={20} color="#6b7280" />
+                          )}
+                        </button>
+                        <Input
+                          className="bg-gray-100"
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Enter your confirm password"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex justify-end mt-11">
               <CustomButton
-                styleType="full"
+                styleType="rectangular"
                 type="submit"
                 name="update"
                 disabled={isLoading}
                 isLoading={isLoading}
               />
-            </form>
-          </Form>
-        </div>
-      </div>
-    </div>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 };
 

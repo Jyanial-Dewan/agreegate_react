@@ -17,12 +17,20 @@ import { EyeIcon, EyeOffIcon, LockKeyhole } from "lucide-react";
 import { nodeURL, postData } from "@/Utility/apiFuntion";
 import CustomButton from "@/components/Buttons/CustomButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Rule, StrengthLevel } from "@/components/common/PasswordStrength";
+import PasswordStrength from "@/components/common/PasswordStrength";
 
 const formSchema = z
   .object({
-    old_password: z.string().min(8, "Too short"),
-    new_password: z.string().min(8, "Too short"),
-    confirm: z.string().min(8, "Too short"),
+    old_password: z.string().min(8, "Type at least 8 character"),
+    new_password: z
+      .string()
+      .min(8)
+      .regex(/[A-Z]/)
+      .regex(/[a-z]/)
+      .regex(/[0-9]/)
+      .regex(/[^A-Za-z0-9]/),
+    confirm: z.string().min(8, "Type at least 8 character"),
   })
   .refine((data) => data.new_password === data.confirm, {
     message: "Passwords do not match",
@@ -33,8 +41,15 @@ const ChangePassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
+  const [strength, setStrength] = useState<StrengthLevel>(0);
+  const [rules, setRules] = useState<Rule>({
+    length: false,
+    lowercase: false,
+    uppercase: false,
+    number: false,
+    specialChar: false,
+  });
 
   /** Define form */
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,6 +62,9 @@ const ChangePassword = () => {
   });
   /** Update function */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const isAllRulesTrue = Object.values(rules).every((r) => r === true);
+    if (isAllRulesTrue) setStrength(0);
+
     const info = {
       old_password: values.old_password,
       new_password: values.new_password,
@@ -60,21 +78,30 @@ const ChangePassword = () => {
       isToast: true,
     };
     const res = await postData(putParams);
-
-    // const params = {
-    //   url: `${nodeApi.User}/change_password/${token?.user_id}`,
-    //   method: "POST" as method,
-    //   data: info,
-    //   isLoading: true,
-    //   setIsLoading,
-    //   isToast: true,
-    // };
-    // const res = await fetchData(params);
-
     if (res?.status === 200) {
       form.reset();
     }
   };
+
+  const checkStrength = (value: string) => {
+    let score = 0;
+
+    const rules = {
+      length: value.length >= 8,
+      uppercase: /[A-Z]/.test(value),
+      lowercase: /[a-z]/.test(value),
+      number: /[0-9]/.test(value),
+      specialChar: /[^A-Za-z0-9]/.test(value),
+    };
+
+    Object.values(rules).forEach((rule) => {
+      if (rule) score++;
+    });
+
+    setStrength(score as StrengthLevel);
+    setRules(rules);
+  };
+
   const handleShowOldPassword = () => {
     if (showOldPassword) {
       setShowOldPassword(false);
@@ -177,13 +204,107 @@ const ChangePassword = () => {
                           type={showPassword ? "text" : "password"}
                           placeholder="Enter your new password"
                           {...field}
+                          onInput={(e) => {
+                            const input = e.target as HTMLInputElement;
+                            checkStrength(input.value);
+                          }}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
+              <PasswordStrength rules={rules} strength={strength} />
+              {/* {strength > 0 && (
+                <>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between items-center font-semibold">
+                      <h2>Password Strength</h2>
+                      <p style={{ color: strengthColor[strength] }}>
+                        {getStrengthLabel(strength)}
+                      </p>
+                    </div>
+                    {strength > 0 && (
+                      <div
+                        style={{
+                          backgroundColor: strengthColor[strength],
+                          width: `${(strength / 5) * 100}%`,
+                        }}
+                        className="h-2 bg-red-400 rounded-full ${strength?"
+                      />
+                    )}
+                  </div>
+                  <div className="bg-gray-100 p-3 mt-3 rounded-xl">
+                    <div>
+                      <h2 className="font-semibold">Password Requirement</h2>
+                      <div className="grid grid-cols-2">
+                        <div className="flex gap-1 items-center mt-2">
+                          {rules.length ? (
+                            <Check color="green" size={20} />
+                          ) : (
+                            <X color="red" size={20} />
+                          )}
+                          <span
+                            className={rules.length ? "text-green-800" : ""}
+                          >
+                            At least 8 Characters
+                          </span>
+                        </div>
+                        <div className="flex gap-1 items-center mt-2">
+                          {rules.lowercase ? (
+                            <Check color="green" size={20} />
+                          ) : (
+                            <X color="red" size={20} />
+                          )}
+                          <span
+                            className={rules.lowercase ? "text-green-800" : ""}
+                          >
+                            Contains lowercase letter
+                          </span>
+                        </div>
+                        <div className="flex gap-1 items-center mt-2">
+                          {rules.specialChar ? (
+                            <Check color="green" size={20} />
+                          ) : (
+                            <X color="red" size={20} />
+                          )}
+                          <span
+                            className={
+                              rules.specialChar ? "text-green-800" : ""
+                            }
+                          >
+                            Contains special character
+                          </span>
+                        </div>
+                        <div className="flex gap-1 items-center mt-2">
+                          {rules.uppercase ? (
+                            <Check color="green" size={20} />
+                          ) : (
+                            <X color="red" size={20} />
+                          )}
+                          <span
+                            className={rules.uppercase ? "text-green-800" : ""}
+                          >
+                            Contains uppercase letter
+                          </span>
+                        </div>
+                        <div className="flex gap-1 items-center mt-2">
+                          {rules.number ? (
+                            <Check color="green" size={20} />
+                          ) : (
+                            <X color="red" size={20} />
+                          )}
+                          <span
+                            className={rules.number ? "text-green-800" : ""}
+                          >
+                            Contains number
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )} */}
               <FormField
                 control={form.control}
                 name="confirm"

@@ -54,8 +54,8 @@ const PasswordStrength = ({ strength, rules }: IPasswordStrenghtProps) => {
           <div className="bg-gray-100 p-3 mt-3 rounded-xl">
             <div>
               <h2 className="font-semibold">Password Requirement</h2>
-              <div className="grid grid-cols-2">
-                <div className="flex gap-1 items-center mt-2">
+              <div className="flex flex-wrap">
+                <div className="flex gap-1 items-center mt-2 min-w-1/2">
                   {rules.length ? (
                     <Check color="green" size={20} />
                   ) : (
@@ -65,7 +65,7 @@ const PasswordStrength = ({ strength, rules }: IPasswordStrenghtProps) => {
                     At least 8 Characters
                   </span>
                 </div>
-                <div className="flex gap-1 items-center mt-2">
+                <div className="flex gap-1 items-center mt-2 min-w-1/2">
                   {rules.lowercase ? (
                     <Check color="green" size={20} />
                   ) : (
@@ -75,7 +75,7 @@ const PasswordStrength = ({ strength, rules }: IPasswordStrenghtProps) => {
                     Contains lowercase letter
                   </span>
                 </div>
-                <div className="flex gap-1 items-center mt-2">
+                <div className="flex gap-1 items-center mt-2 min-w-1/2">
                   {rules.specialChar ? (
                     <Check color="green" size={20} />
                   ) : (
@@ -85,7 +85,7 @@ const PasswordStrength = ({ strength, rules }: IPasswordStrenghtProps) => {
                     Contains special character
                   </span>
                 </div>
-                <div className="flex gap-1 items-center mt-2">
+                <div className="flex gap-1 items-center mt-2 min-w-1/2">
                   {rules.uppercase ? (
                     <Check color="green" size={20} />
                   ) : (
@@ -95,7 +95,7 @@ const PasswordStrength = ({ strength, rules }: IPasswordStrenghtProps) => {
                     Contains uppercase letter
                   </span>
                 </div>
-                <div className="flex gap-1 items-center mt-2">
+                <div className="flex gap-1 items-center mt-2 min-w-1/2">
                   {rules.number ? (
                     <Check color="green" size={20} />
                   ) : (

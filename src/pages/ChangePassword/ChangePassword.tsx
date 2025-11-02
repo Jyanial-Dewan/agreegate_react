@@ -82,7 +82,6 @@ const ChangePassword = () => {
       form.reset();
     }
   };
-
   const checkStrength = (value: string) => {
     let score = 0;
 
@@ -167,7 +166,7 @@ const ChangePassword = () => {
                           )}
                         </button>
                         <Input
-                          className="bg-gray-100"
+                          className="bg-[#F6F7FB]"
                           type={showOldPassword ? "text" : "password"}
                           placeholder="Enter your current password"
                           {...field}
@@ -200,7 +199,7 @@ const ChangePassword = () => {
                           )}
                         </button>
                         <Input
-                          className="bg-gray-100"
+                          className="bg-[#F6F7FB]"
                           type={showPassword ? "text" : "password"}
                           placeholder="Enter your new password"
                           {...field}
@@ -234,7 +233,7 @@ const ChangePassword = () => {
                       />
                     )}
                   </div>
-                  <div className="bg-gray-100 p-3 mt-3 rounded-xl">
+                  <div className="bg-[#F6F7FB] p-3 mt-3 rounded-xl">
                     <div>
                       <h2 className="font-semibold">Password Requirement</h2>
                       <div className="grid grid-cols-2">
@@ -327,7 +326,7 @@ const ChangePassword = () => {
                           )}
                         </button>
                         <Input
-                          className="bg-gray-100"
+                          className="bg-[#F6F7FB]"
                           type={showConfirmPassword ? "text" : "password"}
                           placeholder="Enter your confirm password"
                           {...field}

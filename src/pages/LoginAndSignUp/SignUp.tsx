@@ -142,13 +142,13 @@ const SignUp = () => {
 
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center p-4">
-      <div className="w-[50%] h-full">
+      <div className="hidden md:block md:w-[50%] h-full">
         <img src={RegisterImage} className="w-full h-full" />
       </div>
 
-      <div className="flex flex-col gap-4 w-[50%] h-full justify-center items-center">
+      <div className="flex flex-col gap-4 md:w-[40%] w-[80%] h-full justify-center items-center">
         <h3 className="font-bold text-lg">Create an account</h3>
-        <div className="max-h-[80vh] overflow-y-auto px-4">
+        <div className="max-h-[80vh] overflow-y-auto px-4 w-full">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="flex flex-col gap-3">
@@ -165,41 +165,37 @@ const SignUp = () => {
                     </FormItem>
                   )}
                 />
-                <div className="flex gap-3 justify-between">
-                  <FormField
-                    control={form.control}
-                    name="firstname"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>First Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="w-full"
-                            placeholder="first name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="lastname"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="w-full"
-                            placeholder="last name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <div className="flex flex-col gap-3 justify-between md:flex-row">
+                  <div className="md:w-1/2 w-full">
+                    <FormField
+                      control={form.control}
+                      name="firstname"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>First Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="first name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="md:w-1/2 w-full">
+                    <FormField
+                      control={form.control}
+                      name="lastname"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Last Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="last name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
                 <FormField
                   control={form.control}
@@ -236,70 +232,76 @@ const SignUp = () => {
                   )}
                 />
                 <div className="flex flex-col gap-3">
-                  <div className="flex gap-3 justify-between">
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <button
-                                type="button"
-                                onClick={handleShowPassword}
-                                className="absolute right-4 top-2 cursor-pointer"
-                              >
-                                {showPassword ? (
-                                  <EyeOffIcon size={20} color="#6b7280" />
-                                ) : (
-                                  <EyeIcon size={20} color="#6b7280" />
-                                )}
-                              </button>
-                              <Input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="*********"
-                                {...field}
-                                onInput={(e) => {
-                                  const input = e.target as HTMLInputElement;
-                                  checkStrength(input.value);
-                                }}
-                              />
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="confirm"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirm Password</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <button
-                                type="button"
-                                onClick={handleShowConfirmPassword}
-                                className="absolute right-4 top-2 cursor-pointer"
-                              >
-                                {showConfirmPassword ? (
-                                  <EyeOffIcon size={20} color="#6b7280" />
-                                ) : (
-                                  <EyeIcon size={20} color="#6b7280" />
-                                )}
-                              </button>
-                              <Input
-                                type={showConfirmPassword ? "text" : "password"}
-                                placeholder="*********"
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className="flex flex-col md:flex-row gap-3 justify-between">
+                    <div className="md:w-1/2 w-full">
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <button
+                                  type="button"
+                                  onClick={handleShowPassword}
+                                  className="absolute right-4 top-2 cursor-pointer"
+                                >
+                                  {showPassword ? (
+                                    <EyeOffIcon size={20} color="#6b7280" />
+                                  ) : (
+                                    <EyeIcon size={20} color="#6b7280" />
+                                  )}
+                                </button>
+                                <Input
+                                  type={showPassword ? "text" : "password"}
+                                  placeholder="*********"
+                                  {...field}
+                                  onInput={(e) => {
+                                    const input = e.target as HTMLInputElement;
+                                    checkStrength(input.value);
+                                  }}
+                                />
+                              </div>
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="md:w-1/2 w-full">
+                      <FormField
+                        control={form.control}
+                        name="confirm"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Confirm Password</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <button
+                                  type="button"
+                                  onClick={handleShowConfirmPassword}
+                                  className="absolute right-4 top-2 cursor-pointer"
+                                >
+                                  {showConfirmPassword ? (
+                                    <EyeOffIcon size={20} color="#6b7280" />
+                                  ) : (
+                                    <EyeIcon size={20} color="#6b7280" />
+                                  )}
+                                </button>
+                                <Input
+                                  type={
+                                    showConfirmPassword ? "text" : "password"
+                                  }
+                                  placeholder="*********"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                   <PasswordStrength strength={strength} rules={rules} />
                 </div>

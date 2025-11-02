@@ -108,7 +108,7 @@ const Login = () => {
 
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center p-4">
-      <div className="w-[50%] h-full">
+      <div className="hidden md:block md:w-[50%] h-full">
         <img src={ClientImage} className="w-full h-full" />
       </div>
 
